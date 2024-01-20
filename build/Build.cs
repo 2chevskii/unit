@@ -3,6 +3,7 @@ using Nuke.Common;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tools.DotNet;
+using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Utilities.Collections;
 
 class Build : NukeBuild
@@ -25,6 +26,9 @@ class Build : NukeBuild
 
     [Solution("Dvchevskii.Unit.sln")]
     readonly Solution Sln;
+
+    [GitVersion]
+    readonly GitVersion Version;
 
     Target Restore =>
         _ =>
@@ -59,6 +63,7 @@ class Build : NukeBuild
                                     .EnableNoDependencies()
                                     .SetConfiguration(Configuration)
                                     .SetProjectFile(project)
+                                    .SetVersion(Version.NuGetVersionV2)
                             )
                         )
                 );
@@ -84,5 +89,22 @@ class Build : NukeBuild
                                         .SetProjectFile(project.Path)
                                 )
                             )
+                );
+
+    Target Pack =>
+        _ =>
+            _.DependsOn(CompileMain)
+                .Executes(
+                    () =>
+                        SourceProjects.ForEach(project =>
+                            DotNetTasks.DotNetPack(settings =>
+                                settings
+                                    .SetConfiguration(Configuration)
+                                    .EnableNoBuild()
+                                    .EnableNoRestore()
+                                    .SetVersion(Version.NuGetVersionV2)
+                                    .SetProject(project)
+                            )
+                        )
                 );
 }

@@ -78,6 +78,7 @@
               "Compile",
               "CompileMain",
               "CompileTests",
+              "Pack",
               "Restore",
               "UnitTest"
             ]
@@ -96,6 +97,7 @@
               "Compile",
               "CompileMain",
               "CompileTests",
+              "Pack",
               "Restore",
               "UnitTest"
             ]
