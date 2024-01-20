@@ -1,0 +1,10 @@
+bin/
+obj/
+TestResults/
+coverage/
+/.idea/
+/.vs/
+/.nuke/temp/
+*.DotSettings.user
+.nuget/
+/artifacts/

@@ -1,0 +1,9 @@
+on: [push, pull_request]
+jobs:
+  unit-test:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: ./build.sh unit-test
