@@ -8,8 +8,8 @@
       "properties": {
         "Configuration": {
           "type": "string",
-          "description": "Configuration to build - Default is 'Debug' (local) or 'Release' (server)",
           "enum": [
+            "All",
             "Debug",
             "Release"
           ]
@@ -17,6 +17,9 @@
         "Continue": {
           "type": "boolean",
           "description": "Indicates to continue a previously failed build attempt"
+        },
+        "CopyLibsOutput": {
+          "type": "boolean"
         },
         "Help": {
           "type": "boolean",
@@ -43,7 +46,7 @@
             "VSCode"
           ]
         },
-        "NoCompile": {
+        "HtmlTestResults": {
           "type": "boolean"
         },
         "NoLogo": {
@@ -75,9 +78,14 @@
           "items": {
             "type": "string",
             "enum": [
+              "Clean",
+              "CleanArtifacts",
+              "CleanProjects",
               "Compile",
               "CompileMain",
               "CompileTests",
+              "CopyLibrariesToArtifactsDirectory",
+              "CreateGitHubRelease",
               "Pack",
               "Restore",
               "UnitTest"
@@ -86,7 +94,7 @@
         },
         "Sln": {
           "type": "string",
-          "description": "Path to a solution file that is automatically loaded. Default is Dvchevskii.Unit.sln"
+          "description": "Path to a solution file that is automatically loaded"
         },
         "Target": {
           "type": "array",
@@ -94,9 +102,14 @@
           "items": {
             "type": "string",
             "enum": [
+              "Clean",
+              "CleanArtifacts",
+              "CleanProjects",
               "Compile",
               "CompileMain",
               "CompileTests",
+              "CopyLibrariesToArtifactsDirectory",
+              "CreateGitHubRelease",
               "Pack",
               "Restore",
               "UnitTest"

@@ -73,22 +73,6 @@ public class UnitTests
     }
 
     [TestMethod]
-    public void Test_UnitToValueTupleConvert()
-    {
-        ValueTuple tuple = ValueTuple.Create();
-        Unit unit = tuple;
-        unit.Should().Be(Unit.Default);
-    }
-
-    [TestMethod]
-    public void Test_ValueTupleToUnitConvert()
-    {
-        Unit unit = Unit.Default;
-        ValueTuple tuple = unit;
-        tuple.Should().Be(ValueTuple.Create());
-    }
-
-    [TestMethod]
     public void Test_EqualHashCode()
     {
         new Unit().GetHashCode().Should().Be(Unit.Default.GetHashCode());

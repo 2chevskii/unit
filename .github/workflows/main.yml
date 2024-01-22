@@ -1,28 +1,34 @@
 on: [push, pull_request]
 jobs:
-  unit-test:
+  test:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - name: ✅ Checkout repository
+        uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: 🧪 Run unit tests
+        run: ./build.sh unit-test --html-test-results
+      - name: 💾 Upload test results to artifact storage
+        uses: actions/upload-artifact@v4
         with:
-          fetch-depth: 0
-      - run: ./build.sh unit-test
-      - uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: test/TestResults/test-results.html
+          name: test_results
+          path: artifacts/test_results/*
   build:
     runs-on: ubuntu-22.04
+    needs: test
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - run: ./build.sh compile-main pack --configuration Release
-      - uses: actions/upload-artifact@v4
-        with:
-          name: netstandard2.0
-          path: src/Dvchevskii.Unit/bin/Release/netstandard2.0
-      - uses: actions/upload-artifact@v4
+      - name: ✅ Checkout repository
+        uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: 🛠️ Run release build
+        run: ./build.sh pack --configuration Release --copy-libs-output
+      - name: 💾 Upload build artifacts 1/2
+        uses: actions/upload-artifact@v4
         with:
           name: packages
-          path: src/Dvchevskii.Unit/bin/Release/Dvchevskii.Unit.*.*nupkg
+          path: artifacts/pkg/*
+      - name: 💾 Upload build artifacts 2/2
+        uses: actions/upload-artifact@v4
+        with:
+          name: libraries
+          path: artifacts/lib/*

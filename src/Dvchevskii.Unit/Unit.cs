@@ -42,10 +42,6 @@ namespace Dvchevskii.Unit
             }
         }
 
-        public static implicit operator Unit(ValueTuple tuple) => Default;
-
-        public static implicit operator ValueTuple(Unit unit) => ValueTuple.Create();
-
         public override string ToString() => STRING_REPRESENTATION;
 
         public override bool Equals(object obj)
@@ -58,7 +54,7 @@ namespace Dvchevskii.Unit
             return false;
         }
 
-        public override int GetHashCode() => 2133686519;
+        public override int GetHashCode() => 804741542;
 
         public bool Equals(Unit other) => true;
 
