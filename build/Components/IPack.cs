@@ -1,5 +1,4 @@
 ﻿using Nuke.Common;
-using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 
 interface IPack : ICompile

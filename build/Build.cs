@@ -1,13 +1,6 @@
 using Nuke.Common;
-using Nuke.Common.IO;
-using Nuke.Common.ProjectModel;
-using Nuke.Common.Tools.GitVersion;
 
-class Build
-    : NukeBuild,
-        IPack,
-        IClean,
-        ICreateGitHubRelease
+class Build : NukeBuild, IPack, IClean, INugetPush
 {
     public static int Main() => Execute<Build>(x => x.From<ICompile>().CompileMain);
 

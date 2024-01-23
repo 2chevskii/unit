@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,7 +23,6 @@ interface ICreateGitHubRelease : IHazVersion, IHazGitRepository, IHazArtifacts
                 .Requires(() => GitHubActions.Instance.Ref.StartsWith("refs/tags/"))
                 .Executes(async () =>
                 {
-                    GitHubTasks.GitHubClient.Credentials = new Credentials(GithubToken);
                     Release release = await GetOrCreateRelease();
 
                     IEnumerable<Task> uploadTasks =
@@ -47,7 +45,7 @@ interface ICreateGitHubRelease : IHazVersion, IHazGitRepository, IHazArtifacts
 
     async Task<Release> GetOrCreateRelease()
     {
-        var repositoryId = await GetRepositoryId();
+        long repositoryId = await GetRepositoryId();
 
         Log.Information(
             "Creating GitHub release (repository id={RepositoryId}, release name={ReleaseName}, tag name={TagName})",

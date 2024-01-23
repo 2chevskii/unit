@@ -53,6 +53,9 @@
           "type": "boolean",
           "description": "Disables displaying the NUKE logo"
         },
+        "NugetFeed": {
+          "type": "string"
+        },
         "Partition": {
           "type": "string",
           "description": "Partition to use on CI"
@@ -86,8 +89,11 @@
               "CompileTests",
               "CopyLibrariesToArtifactsDirectory",
               "CreateGitHubRelease",
+              "DownloadReleaseAssets",
+              "NugetPush",
               "Pack",
               "Restore",
+              "TestAddSource",
               "UnitTest"
             ]
           }
@@ -110,8 +116,11 @@
               "CompileTests",
               "CopyLibrariesToArtifactsDirectory",
               "CreateGitHubRelease",
+              "DownloadReleaseAssets",
+              "NugetPush",
               "Pack",
               "Restore",
+              "TestAddSource",
               "UnitTest"
             ]
           }
