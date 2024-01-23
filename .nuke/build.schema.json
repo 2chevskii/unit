@@ -90,10 +90,10 @@
               "CopyLibrariesToArtifactsDirectory",
               "CreateGitHubRelease",
               "DownloadReleaseAssets",
+              "EnsureHasNugetSource",
               "NugetPush",
               "Pack",
               "Restore",
-              "TestAddSource",
               "UnitTest"
             ]
           }
@@ -117,10 +117,10 @@
               "CopyLibrariesToArtifactsDirectory",
               "CreateGitHubRelease",
               "DownloadReleaseAssets",
+              "EnsureHasNugetSource",
               "NugetPush",
               "Pack",
               "Restore",
-              "TestAddSource",
               "UnitTest"
             ]
           }

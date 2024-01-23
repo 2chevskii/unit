@@ -2,9 +2,28 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Version Condition="$(Version) == ''">1.0.0</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Label="General">
+    <Description>Unit - the type which represents single unchangeable value</Description>
+    <PackageReleaseNotes>https://github.com/2chevskii/unit/releases/tag/v$(Version)</PackageReleaseNotes>
+    <PackageTags>unit functional utility types</PackageTags>
+    <PackageIconUrl>assets\icon_128.png</PackageIconUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Debug">
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <DebugType>portable</DebugType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(SolutionDir)README.md" Pack="true" PackagePath="\" />
+    <None Include="$(SolutionDir)assets\icon_128.png" Pack="true" PackagePath="\assets\" />
+    <None Include="$(SolutionDir)LICENSE" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
 </Project>

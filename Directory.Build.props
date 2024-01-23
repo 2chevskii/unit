@@ -1,10 +1,17 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <Description>Unit - the type which represents single unchangeable value</Description>
     <Authors>2CHEVSKII</Authors>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Copyright">
     <CurrentYear>$([System.DateTime]::Now.Year)</CurrentYear>
     <CopyrightDateSpan>2024</CopyrightDateSpan>
     <CopyrightDateSpan Condition="$(CurrentYear) != 2024">2024-$(CurrentYear)</CopyrightDateSpan>
     <Copyright>Copyright (c) $(CopyrightDateSpan) 2CHEVSKII</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Repository">
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/2chevskii/unit.git</RepositoryUrl>
   </PropertyGroup>
 </Project>
