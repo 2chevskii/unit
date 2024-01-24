@@ -18,6 +18,6 @@ jobs:
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       - name: 🚚 Push packages to NuGet feed (github.com)
-        run: ./build.sh nuget-push --nuget-feed 'https://nuget.pkg.github.com/${{ github.repository }}/index.json'
+        run: ./build.sh nuget-push --nuget-feed 'https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json'
         env:
           NUGET_API_KEY: ${{ secrets.GITHUB_TOKEN }}
