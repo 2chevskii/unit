@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <None Include="$(SolutionDir)README.md" Pack="true" PackagePath="\" />
-    <None Include="$(SolutionDir)assets\icon_128.png" Pack="true" PackagePath="\assets\" />
+    <None Include="$(SolutionDir)assets\icon_128.png" Pack="true" PackagePath="\assets" />
     <None Include="$(SolutionDir)LICENSE" Pack="true" PackagePath="\" />
   </ItemGroup>
 
