@@ -8,7 +8,7 @@ using Serilog;
 
 namespace Components;
 
-interface IDocs : IHazSlnFiles, IHazArtifacts
+interface IDocs : IHazSlnFiles, IHazArtifacts, IRestore
 {
     AbsolutePath DocsDirectory => RootDirectory / "docs";
     AbsolutePath DocfxConfig => DocsDirectory / "docfx.json";
@@ -32,7 +32,8 @@ interface IDocs : IHazSlnFiles, IHazArtifacts
 
     Target DocsCompile =>
         _ =>
-            _.Executes(() =>
+            _.DependsOn(RestoreTools)
+                .Executes(() =>
             {
                 Log.Information("Generating documentation website...");
                 DotNetTasks.DotNet($"docfx build {DocfxConfig}");
