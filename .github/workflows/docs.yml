@@ -10,7 +10,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: github-pages
-          path: artifacts/docs/dist.tar.gz
+          path: artifacts/docs/github-pages.tar.gz
   deploy:
     runs-on: ubuntu-22.04
     needs: build

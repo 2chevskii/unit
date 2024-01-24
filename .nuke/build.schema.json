@@ -99,6 +99,7 @@
               "NugetPush",
               "Pack",
               "Restore",
+              "RestoreTools",
               "UnitTest"
             ]
           }
@@ -131,6 +132,7 @@
               "NugetPush",
               "Pack",
               "Restore",
+              "RestoreTools",
               "UnitTest"
             ]
           }
