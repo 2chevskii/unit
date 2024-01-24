@@ -11,7 +11,7 @@ interface IPack : ICompile
                         DotNetTasks.DotNetPack(settings =>
                             settings
                                 .EnableNoBuild()
-                                .SetVersion(Version.NuGetVersionV2)
+                                .SetVersion(Version.SemVer)
                                 .SetOutputDirectory(PackagesDirectory)
                                 .SetConfiguration(Configuration)
                         )

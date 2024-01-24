@@ -48,7 +48,7 @@ interface ICompile : IHazArtifacts, IRestore, IHazConfiguration, IHazVersion
                 .EnableNoRestore()
                 .EnableNoDependencies()
                 .SetConfiguration(Configuration)
-                .SetVersion(Version.NuGetVersionV2);
+                .SetVersion(Version.SemVer);
 
     [Parameter]
     bool CopyLibsOutput => TryGetValue<bool?>(() => CopyLibsOutput).GetValueOrDefault();
