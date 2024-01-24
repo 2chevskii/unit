@@ -8,3 +8,5 @@ coverage/
 *.DotSettings.user
 .nuget/
 /artifacts/
+/docs/api/
+/docs/dist/

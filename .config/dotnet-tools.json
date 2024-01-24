@@ -7,6 +7,12 @@
       "commands": [
         "dotnet-csharpier"
       ]
+    },
+    "docfx": {
+      "version": "2.75.1",
+      "commands": [
+        "docfx"
+      ]
     }
   }
 }
