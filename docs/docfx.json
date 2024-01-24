@@ -40,6 +40,11 @@
       "_appTitle": "Dvchevskii.Unit",
       "_enableSearch": true,
       "pdf": false
+    },
+    "fileMetadata": {
+      "_layout": {
+        "about.md": "landing"
+      }
     }
   }
 }
