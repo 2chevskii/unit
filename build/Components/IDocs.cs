@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Formats.Tar;
+using System.IO;
 using Nuke.Common;
 using Nuke.Common.IO;
 using Nuke.Common.Tooling;
@@ -13,7 +14,7 @@ interface IDocs : IHazSlnFiles, IHazArtifacts, IRestore
     AbsolutePath DocsDirectory => RootDirectory / "docs";
     AbsolutePath DocfxConfig => DocsDirectory / "docfx.json";
     AbsolutePath DocsOutputDirectory => DocsDirectory / "dist";
-    AbsolutePath DocsArtifactPath => ArtifactsDirectory / "docs/github-pages.tar.gz";
+    AbsolutePath DocsArtifactPath => ArtifactsDirectory / "docs/github-pages.tar";
 
     Target Docs => _ => _.DependsOn(DocsCompile, DocsGzip);
 
@@ -34,10 +35,10 @@ interface IDocs : IHazSlnFiles, IHazArtifacts, IRestore
         _ =>
             _.DependsOn(RestoreTools)
                 .Executes(() =>
-            {
-                Log.Information("Generating documentation website...");
-                DotNetTasks.DotNet($"docfx build {DocfxConfig}");
-            });
+                {
+                    Log.Information("Generating documentation website...");
+                    DotNetTasks.DotNet($"docfx build {DocfxConfig}");
+                });
 
     Target DocsGzip =>
         _ =>
@@ -48,6 +49,8 @@ interface IDocs : IHazSlnFiles, IHazArtifacts, IRestore
                         "Compressing documentation website files to {ArtifactPath}",
                         DocsArtifactPath
                     );
-                    DocsOutputDirectory.TarGZipTo(DocsArtifactPath, fileMode: FileMode.Create);
+
+                    using Stream tarfileStream = File.OpenWrite(DocsArtifactPath);
+                    TarFile.CreateFromDirectory(DocsOutputDirectory, tarfileStream, false);
                 });
 }
