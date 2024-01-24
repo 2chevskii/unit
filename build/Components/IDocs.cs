@@ -51,7 +51,11 @@ interface IDocs : IHazSlnFiles, IHazArtifacts, IRestore
                     );
 
                     DocsArtifactPath.Parent.CreateOrCleanDirectory();
-                    using Stream tarfileStream = File.OpenWrite(DocsArtifactPath);
-                    TarFile.CreateFromDirectory(DocsOutputDirectory, tarfileStream, false);
+                    // using Stream tarfileStream = File.OpenWrite(DocsArtifactPath);
+                    // TarFile.CreateFromDirectory(DocsOutputDirectory, tarfileStream, false);
+
+                    ProcessTasks.StartShell(
+                        $"tar --dereference --directory {DocsOutputDirectory} -cvf {DocsArtifactPath} ."
+                    );
                 });
 }
