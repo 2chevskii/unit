@@ -37,6 +37,9 @@ interface IDocs : IHazSlnFiles, IHazArtifacts, IRestore
                 .Executes(() =>
                 {
                     Log.Information("Generating documentation website...");
+                    Log.Verbose("Generating metadata files...");
+                    DotNetTasks.DotNet($"docfx metadata {DocfxConfig}");
+                    Log.Verbose("Generating HTML...");
                     DotNetTasks.DotNet($"docfx build {DocfxConfig}");
                 });
 
