@@ -1,6 +1,4 @@
-- name: Home
-  href: /
 - name: About
-  href: /about.html
+  href: about.html
 - name: API
-  href: /api/Dvchevskii.Unit.html
+  href: api/Dvchevskii.Unit.html
