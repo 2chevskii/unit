@@ -5,11 +5,13 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - run: ./build.sh docs
-      - uses: actions/upload-artifact@v4
+      - name: ✅ Checkout repository
+        uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: 🛠️ Generate documentation
+        run: ./build.sh docs
+      - name: 💾 Upload website dist to artifact storage
+        uses: actions/upload-artifact@v4
         with:
           name: github-pages
           path: artifacts/docs/github-pages.tar
@@ -23,5 +25,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/deploy-pages@v4
+      - name: 🚚 Deploy documentation website
+        uses: actions/deploy-pages@v4
         id: deployment
