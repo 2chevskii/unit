@@ -1,0 +1,36 @@
+name: 🎯 Feature Request
+description: Suggest an improvement to the project's functionality
+labels: [enhancement, triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        _Hi there :wave: and thanks for taking the time to send a feature request!_
+
+  - type: textarea
+    attributes:
+      label: Description
+      description: What should the new feature do?
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Usage Example
+      description: How would the proposed feature be used?
+
+  - type: textarea
+    attributes:
+      label: Alternative
+      description: What is the current alternative?
+
+  - type: dropdown
+    id: pull-request
+    attributes:
+      label: Could you help with a pull-request?
+      description: If you know, how to solve a problem, don't hesitate to contribute, this would help us a lot.
+      options:
+        - "Nada"
+        - "Yup"
+    validations:
+      required: true
