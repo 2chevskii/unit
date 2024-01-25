@@ -89,11 +89,17 @@
               "CompileTests",
               "CopyLibrariesToArtifactsDirectory",
               "CreateGitHubRelease",
+              "Docs",
+              "DocsClean",
+              "DocsCompile",
+              "DocsGzip",
+              "DocsPreview",
               "DownloadReleaseAssets",
               "EnsureHasNugetSource",
               "NugetPush",
               "Pack",
               "Restore",
+              "RestoreTools",
               "UnitTest"
             ]
           }
@@ -116,11 +122,17 @@
               "CompileTests",
               "CopyLibrariesToArtifactsDirectory",
               "CreateGitHubRelease",
+              "Docs",
+              "DocsClean",
+              "DocsCompile",
+              "DocsGzip",
+              "DocsPreview",
               "DownloadReleaseAssets",
               "EnsureHasNugetSource",
               "NugetPush",
               "Pack",
               "Restore",
+              "RestoreTools",
               "UnitTest"
             ]
           }

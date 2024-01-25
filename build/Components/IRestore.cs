@@ -12,4 +12,13 @@ interface IRestore : IHazSlnFiles
                         settings.SetProcessWorkingDirectory(Sln.Directory)
                     )
             );
+
+    Target RestoreTools =>
+        _ =>
+            _.Executes(
+                () =>
+                    DotNetTasks.DotNetToolRestore(settings =>
+                        settings.SetProcessWorkingDirectory(Sln.Directory)
+                    )
+            );
 }
