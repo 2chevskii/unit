@@ -8,7 +8,7 @@
     <Description>Unit - the type which represents single unchangeable value</Description>
     <PackageReleaseNotes>https://github.com/2chevskii/unit/releases/tag/v$(Version)</PackageReleaseNotes>
     <PackageTags>unit functional utility types</PackageTags>
-    <PackageIconUrl>assets\icon_128.png</PackageIconUrl>
+    <PackageIconUrl>icon_128.png</PackageIconUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <None Include="$(SolutionDir)README.md" Pack="true" PackagePath="\" />
-    <None Include="$(SolutionDir)assets\icon_128.png" Pack="true" PackagePath="\assets" />
+    <None Include="$(SolutionDir)assets\icon_128.png" Pack="true" PackagePath="\" />
     <None Include="$(SolutionDir)LICENSE" Pack="true" PackagePath="\" />
   </ItemGroup>
 
