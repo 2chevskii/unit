@@ -3,8 +3,9 @@ using Nuke.Common.IO;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Utilities.Collections;
+using Serilog;
 
-interface IClean : IHazArtifacts, IHazSlnFiles, IHazConfiguration, ITest
+interface IClean : ITest
 {
     Target CleanProjects =>
         _ =>
@@ -26,9 +27,17 @@ interface IClean : IHazArtifacts, IHazSlnFiles, IHazConfiguration, ITest
         _ =>
             _.Executes(
                 () =>
-                    new[] { PackagesDirectory, LibrariesDirectory, TestResultsDirectory }.ForEach(
-                        x => x.CreateOrCleanDirectory()
-                    )
+                    new[]
+                    {
+                        PackagesDirectory,
+                        LibrariesDirectory,
+                        TestResultsDirectory,
+                        DocsArtifactsDirectory
+                    }.ForEach(x =>
+                    {
+                        Log.Debug("Cleaning directory: {Directory}", x);
+                        x.CreateOrCleanDirectory();
+                    })
             );
 
     Target Clean => _ => _.DependsOn(CleanProjects, CleanArtifacts);

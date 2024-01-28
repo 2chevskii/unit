@@ -1,19 +1,31 @@
 import { defineConfig } from "vitepress";
 import nugetIcon from "./resources/nuget-icon.js";
+import packageJson from "../package.json";
 
-// https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "Dvchevskii.Unit",
   description: "Dvchevskii.Unit package documentation",
   appearance: "force-dark",
   themeConfig: {
-    // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: "Home", link: "/" },
       { text: "Guide", link: "/guide/installation" },
-      { text: "API", link: "/api/" },
+      { text: `API`, link: "/api/" },
+      {
+        text: packageJson.latestNugetVersion,
+        items: [
+          {
+            text: "Release notes",
+            link:
+              "https://github.com/2chevskii/unit/releases/tag/v" +
+              packageJson.latestNugetVersion,
+          },
+        ],
+      },
     ],
-
+    footer: {
+      message: `Built with <a href="https://vitepress.dev">VitePress</a> | API version: <code>${packageJson.version}</code>`,
+    },
     sidebar: [
       {
         text: "Guide",

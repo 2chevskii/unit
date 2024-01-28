@@ -1,6 +1,6 @@
 {
   "name": "@2chevskii/unit-docs",
-  "version": "1.0.0",
+  "version": "1.0.5-vitepress-docs.1",
   "description": "Dvchevskii.Unit package documentation",
   "private": true,
   "type": "module",
@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/2chevskii/unit#readme",
   "devDependencies": {
+    "@types/node": "^20.11.10",
     "vitepress": "^1.0.0-rc.40"
-  }
+  },
+  "latestNugetVersion": "1.0.3"
 }

@@ -3,7 +3,6 @@ layout: home
 
 hero:
   name: "Dvchevskii.Unit"
-  # text: "Dvchevskii.Unit package documentation"
   tagline: Simple Unit type for C#
   actions:
     - theme: brand
@@ -14,11 +13,9 @@ hero:
       link: /api/
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Simple and easy to use API
+    details: What do you expect? It is basically a void
+  - title: No more writing your own Unit-s
+    details: Tired of that? Me too
 ---
 
