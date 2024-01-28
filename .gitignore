@@ -10,3 +10,5 @@ coverage/
 /artifacts/
 /docs/api/
 /docs/dist/
+/docs/node_modules/
+/docs/.vitepress/cache/

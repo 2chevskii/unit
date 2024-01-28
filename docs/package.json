@@ -1,0 +1,26 @@
+{
+  "name": "@2chevskii/unit-docs",
+  "version": "1.0.0",
+  "description": "Dvchevskii.Unit package documentation",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/2chevskii/unit.git"
+  },
+  "keywords": [],
+  "author": "2CHEVSKII",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/2chevskii/unit/issues"
+  },
+  "homepage": "https://github.com/2chevskii/unit#readme",
+  "devDependencies": {
+    "vitepress": "^1.0.0-rc.40"
+  }
+}
