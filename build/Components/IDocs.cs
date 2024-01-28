@@ -7,11 +7,8 @@ using Nuke.Common.Tools.Npm;
 using Nuke.Common.Utilities;
 using Serilog;
 
-interface IDocs : IHazSlnFiles, IHazArtifacts, IRestore, IHazVersion
+interface IDocs : IHazArtifacts, IRestore, IHazVersion, IHazGitHubRelease
 {
-    [LatestNuGetVersion("Dvchevskii.Unit")]
-    NuGetVersion LatestPackageVersion => TryGetValue(() => LatestPackageVersion);
-
     AbsolutePath DocsDirectory => RootDirectory / "docs";
     AbsolutePath DocsOutputDirectory => DocsDirectory / ".vitepress" / "dist";
     AbsolutePath DocsArtifact => DocsArtifactsDirectory / "github-pages.tar";
@@ -38,12 +35,12 @@ interface IDocs : IHazSlnFiles, IHazArtifacts, IRestore, IHazVersion
                         .ReadAllText()
                         .GetJson<Dictionary<string, object>>();
                     props["version"] = version;
-                    props["latestNugetVersion"] = LatestPackageVersion;
+                    props["latestNugetVersion"] = LatestGitHubReleaseTag.OriginalVersion;
 
                     Log.Debug("Version property set to {Version}", version);
                     Log.Debug(
                         "Latest nuget version property set to {LatestNugetVersion}",
-                        LatestPackageVersion
+                        LatestGitHubReleaseTag.OriginalVersion
                     );
                     PackageJson.WriteJson(props);
                 })
