@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
-using Nuke.Common.Tools.NuGet;
 using Serilog;
 
 interface IHazNugetSourceList
@@ -40,16 +39,16 @@ interface IHazNugetSourceList
 
         public static NugetSource Parse(IEnumerable<Output> lines)
         {
-            var firstLine = lines.First().Text;
-            var nameEnabledMatch = NameEnabledRegex.Match(firstLine);
-            var name = nameEnabledMatch.Groups[1].Value;
+            string firstLine = lines.First().Text;
+            Match nameEnabledMatch = NameEnabledRegex.Match(firstLine);
+            string name = nameEnabledMatch.Groups[1].Value;
 
-            var enabledString = nameEnabledMatch.Groups[2].Value;
+            string enabledString = nameEnabledMatch.Groups[2].Value;
 
             Log.Information("Enabled string: {Str}", enabledString);
 
-            var isEnabled = ParseEnabled(enabledString);
-            var uri = lines.Skip(1).First().Text.Trim();
+            bool isEnabled = ParseEnabled(enabledString);
+            string uri = lines.Skip(1).First().Text.Trim();
 
             return new NugetSource
             {
@@ -63,9 +62,9 @@ interface IHazNugetSourceList
         {
             for (int i = 0; i < lines.Count; i += 2)
             {
-                var thisLine = lines[i];
-                var nextLine = lines[i + 1];
-                var source = Parse([thisLine, nextLine]);
+                Output thisLine = lines[i];
+                Output nextLine = lines[i + 1];
+                NugetSource source = Parse([thisLine, nextLine]);
                 yield return source;
             }
         }

@@ -6,12 +6,11 @@ using Nuke.Common;
 using Nuke.Common.IO;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
-using Nuke.Common.Tools.NuGet;
 using Nuke.Common.Utilities;
 using Octokit;
 using FileMode = System.IO.FileMode;
 
-interface INugetPush : INukeBuild, ICreateGitHubRelease, IHazNugetSourceList
+interface INugetPush : ICreateGitHubRelease, IHazNugetSourceList
 {
     string NugetApiKey => EnvironmentInfo.GetVariable("NUGET_API_KEY");
 

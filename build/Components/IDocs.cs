@@ -1,47 +1,82 @@
-﻿using System.Formats.Tar;
-using System.IO;
+﻿using System.Collections.Generic;
+using NuGet.Versioning;
 using Nuke.Common;
 using Nuke.Common.IO;
 using Nuke.Common.Tooling;
-using Nuke.Common.Tools.DocFX;
-using Nuke.Common.Tools.DotNet;
+using Nuke.Common.Tools.Npm;
+using Nuke.Common.Utilities;
 using Serilog;
 
-namespace Components;
-
-interface IDocs : IHazSlnFiles, IHazArtifacts, IRestore
+interface IDocs : IHazSlnFiles, IHazArtifacts, IRestore, IHazVersion
 {
+    [LatestNuGetVersion("Dvchevskii.Unit")]
+    NuGetVersion LatestPackageVersion => TryGetValue(() => LatestPackageVersion);
+
     AbsolutePath DocsDirectory => RootDirectory / "docs";
-    AbsolutePath DocfxConfig => DocsDirectory / "docfx.json";
-    AbsolutePath DocsOutputDirectory => DocsDirectory / "dist";
-    AbsolutePath DocsArtifactPath => ArtifactsDirectory / "docs/github-pages.tar";
+    AbsolutePath DocsOutputDirectory => DocsDirectory / ".vitepress" / "dist";
+    AbsolutePath DocsArtifact => DocsArtifactsDirectory / "github-pages.tar";
+    AbsolutePath PackageJson => DocsDirectory / "package.json";
 
     Target Docs => _ => _.DependsOn(DocsCompile, DocsGzip);
+
+    Target DocsRestore => _ => _.Executes(() => NpmTasks.NpmInstall(SetDocsWorkingDirectory));
+
+    Target DocsClean => _ => _.Executes(() => DocsOutputDirectory.DeleteDirectory());
+
+    Target PatchPackageVersion =>
+        _ =>
+            _.After(DocsRestore)
+                .Executes(() =>
+                {
+                    Log.Information(
+                        "Patching version in {PackageJsonPath}",
+                        RootDirectory.GetRelativePathTo(PackageJson)
+                    );
+                    string version = Version.SemVer;
+
+                    Dictionary<string, object> props = PackageJson
+                        .ReadAllText()
+                        .GetJson<Dictionary<string, object>>();
+                    props["version"] = version;
+                    props["latestNugetVersion"] = LatestPackageVersion;
+
+                    Log.Debug("Version property set to {Version}", version);
+                    Log.Debug(
+                        "Latest nuget version property set to {LatestNugetVersion}",
+                        LatestPackageVersion
+                    );
+                    PackageJson.WriteJson(props);
+                })
+                .Unlisted();
+
+    Target DocsDev =>
+        _ =>
+            _.DependsOn(DocsRestore, PatchPackageVersion)
+                .Executes(
+                    () =>
+                        NpmTasks.NpmRun(settings =>
+                            SetDocsWorkingDirectory(settings).SetCommand("docs:dev")
+                        )
+                );
+    Target DocsCompile =>
+        _ =>
+            _.DependsOn(DocsRestore, PatchPackageVersion)
+                .Executes(
+                    () =>
+                        NpmTasks.NpmRun(settings =>
+                            SetDocsWorkingDirectory(settings).SetCommand("docs:build")
+                        )
+                );
 
     Target DocsPreview =>
         _ =>
             _.DependsOn(DocsCompile)
-                .Executes(() => DotNetTasks.DotNet($"docfx serve {DocsOutputDirectory}"))
-                .ProceedAfterFailure();
-
-    Target DocsClean =>
-        _ =>
-            _.Executes(
-                () => DocsOutputDirectory.DeleteDirectory(),
-                () => (DocsDirectory / "api").DeleteDirectory()
-            );
-
-    Target DocsCompile =>
-        _ =>
-            _.DependsOn(RestoreTools)
-                .Executes(() =>
-                {
-                    Log.Information("Generating documentation website...");
-                    Log.Verbose("Generating metadata files...");
-                    DotNetTasks.DotNet($"docfx metadata {DocfxConfig}");
-                    Log.Verbose("Generating HTML...");
-                    DotNetTasks.DotNet($"docfx build {DocfxConfig}");
-                });
+                .Executes(
+                    () =>
+                        NpmTasks.NpmRun(settings =>
+                            SetDocsWorkingDirectory(settings).SetCommand("docs:preview")
+                        )
+                );
 
     Target DocsGzip =>
         _ =>
@@ -50,15 +85,19 @@ interface IDocs : IHazSlnFiles, IHazArtifacts, IRestore
                 {
                     Log.Information(
                         "Compressing documentation website files to {ArtifactPath}",
-                        DocsArtifactPath
+                        DocsArtifact
                     );
 
-                    DocsArtifactPath.Parent.CreateOrCleanDirectory();
-                    // using Stream tarfileStream = File.OpenWrite(DocsArtifactPath);
-                    // TarFile.CreateFromDirectory(DocsOutputDirectory, tarfileStream, false);
+                    DocsArtifact.Parent.CreateOrCleanDirectory();
 
                     ProcessTasks.StartShell(
-                        $"tar --dereference --directory {DocsOutputDirectory} -cvf {DocsArtifactPath} ."
+                        $"tar --dereference --directory {DocsOutputDirectory} -cvf {DocsArtifact} ."
                     );
                 });
+
+    T SetDocsWorkingDirectory<T>(T settings)
+        where T : ToolSettings
+    {
+        return settings.SetProcessWorkingDirectory(DocsDirectory);
+    }
 }
