@@ -26,17 +26,17 @@ interface ICompile : IHazArtifacts, IRestore, IHazConfiguration, IHazVersion
 
     Target Compile => _ => _.DependsOn(CompileMain, CompileTests);
 
-    Target CopyLibrariesToArtifactsDirectory =>
+    Target CopyLibsOutput =>
         _ =>
             _.Unlisted()
                 .After(CompileMain)
-                .OnlyWhenStatic(() => CopyLibsOutput)
+                .OnlyWhenStatic(() => CopyLibs)
                 .TriggeredBy(CompileMain)
                 .Executes(
                     () =>
                         FileSystemTasks.CopyDirectoryRecursively(
                             MainProject.Directory / "bin/Release/netstandard2.0",
-                            LibrariesDirectory / "netstandard2.0",
+                            ArtifactPaths.Libraries / "netstandard2.0",
                             DirectoryExistsPolicy.Merge,
                             FileExistsPolicy.Overwrite
                         )
@@ -51,5 +51,5 @@ interface ICompile : IHazArtifacts, IRestore, IHazConfiguration, IHazVersion
                 .SetVersion(Version.SemVer);
 
     [Parameter]
-    bool CopyLibsOutput => TryGetValue<bool?>(() => CopyLibsOutput).GetValueOrDefault();
+    bool CopyLibs => TryGetValue<bool?>(() => CopyLibs).GetValueOrDefault();
 }

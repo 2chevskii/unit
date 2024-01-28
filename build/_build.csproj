@@ -16,8 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageDownload Include="docfx" Version="[2.75.1]" />
+    <PackageDownload Include="coverlet.console" Version="[6.0.0]" />
     <PackageDownload Include="GitVersion.Tool" Version="[6.0.0-beta.4]" />
+    <PackageDownload Include="ReportGenerator" Version="[5.2.0]" />
   </ItemGroup>
 
 </Project>

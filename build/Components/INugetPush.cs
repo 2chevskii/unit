@@ -41,7 +41,7 @@ interface INugetPush : ICreateGitHubRelease, IHazNugetSourceList
                                 .SetSource(NugetSourceName)
                                 .SetApiKey(NugetApiKey)
                                 .CombineWith(
-                                    PackagesDirectory.GlobFiles("*.nupkg"),
+                                    ArtifactPaths.Packages.GlobFiles("*.nupkg"),
                                     (settings, package) => settings.SetTargetPath(package)
                                 )
                         )
@@ -57,7 +57,7 @@ interface INugetPush : ICreateGitHubRelease, IHazNugetSourceList
                     from asset in release.Assets
                     let name = asset.Name
                     where name.EndsWith("nupkg")
-                    let path = PackagesDirectory / name
+                    let path = ArtifactPaths.Packages / name
                     select HttpTasks.HttpDownloadFileAsync(
                         asset.BrowserDownloadUrl,
                         path,

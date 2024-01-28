@@ -9,7 +9,7 @@ jobs:
         uses: actions/checkout@v4
         with: { fetch-depth: 0 }
       - name: 🧪 Run unit tests
-        run: ./build.sh unit-test
+        run: ./build.sh test
   create-github-release:
     runs-on: ubuntu-22.04
     needs: test

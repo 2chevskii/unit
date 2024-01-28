@@ -8,8 +8,8 @@ coverage/
 *.DotSettings.user
 .nuget/
 /artifacts/
-/docs/api/
 /docs/dist/
 /docs/node_modules/
 /docs/.vitepress/cache/
 /docs/.vitepress/dist/
+/docs/package-lock.json

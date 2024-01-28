@@ -18,7 +18,7 @@
           "type": "boolean",
           "description": "Indicates to continue a previously failed build attempt"
         },
-        "CopyLibsOutput": {
+        "CopyLibs": {
           "type": "boolean"
         },
         "Help": {
@@ -87,13 +87,16 @@
               "Compile",
               "CompileMain",
               "CompileTests",
-              "CopyLibrariesToArtifactsDirectory",
+              "CopyLibsOutput",
+              "Coverage",
+              "CoverageCollect",
+              "CoverageReport",
               "CreateGitHubRelease",
               "Docs",
               "DocsClean",
               "DocsCompile",
+              "DocsCopy",
               "DocsDev",
-              "DocsGzip",
               "DocsPreview",
               "DocsRestore",
               "DownloadReleaseAssets",
@@ -102,8 +105,7 @@
               "Pack",
               "PatchPackageVersion",
               "Restore",
-              "RestoreTools",
-              "UnitTest"
+              "Test"
             ]
           }
         },
@@ -123,13 +125,16 @@
               "Compile",
               "CompileMain",
               "CompileTests",
-              "CopyLibrariesToArtifactsDirectory",
+              "CopyLibsOutput",
+              "Coverage",
+              "CoverageCollect",
+              "CoverageReport",
               "CreateGitHubRelease",
               "Docs",
               "DocsClean",
               "DocsCompile",
+              "DocsCopy",
               "DocsDev",
-              "DocsGzip",
               "DocsPreview",
               "DocsRestore",
               "DownloadReleaseAssets",
@@ -138,8 +143,7 @@
               "Pack",
               "PatchPackageVersion",
               "Restore",
-              "RestoreTools",
-              "UnitTest"
+              "Test"
             ]
           }
         },

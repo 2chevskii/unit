@@ -10,11 +10,10 @@ jobs:
         with: { fetch-depth: 0 }
       - name: 🛠️ Generate documentation
         run: ./build.sh docs
-      - name: 💾 Upload website dist to artifact storage
-        uses: actions/upload-artifact@v4
+      - name: 💾 Upload github pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: github-pages
-          path: artifacts/docs/github-pages.tar
+          path: artifacts/docs/dist/
   deploy:
     runs-on: ubuntu-22.04
     needs: build

@@ -1,6 +1,7 @@
 {
   "name": "@2chevskii/unit-docs",
-  "version": "1.0.5",
+  "version": "1.0.7-13",
+  "latestReleaseVersion": "1.0.3",
   "description": "Dvchevskii.Unit package documentation",
   "private": true,
   "type": "module",
@@ -23,6 +24,5 @@
   "devDependencies": {
     "@types/node": "^20.11.10",
     "vitepress": "^1.0.0-rc.40"
-  },
-  "latestNugetVersion": "1.0.3"
+  }
 }

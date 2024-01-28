@@ -1,31 +1,39 @@
 import { defineConfig } from "vitepress";
 import nugetIcon from "./resources/nuget-icon.js";
-import packageJson from "../package.json";
+import pkg from "../package.json";
 
 export default defineConfig({
+  base: "/unit/",
+  lang: "en-US",
+  head: [["link", { rel: "icon", href: `/unit/favicon.ico` }]],
   title: "Dvchevskii.Unit",
   description: "Dvchevskii.Unit package documentation",
   appearance: "force-dark",
   themeConfig: {
+    search: { provider: "local" },
     nav: [
       { text: "Home", link: "/" },
       { text: "Guide", link: "/guide/installation" },
-      { text: `API`, link: "/api/" },
+      { text: `API`, link: "/api/Dvchevskii.Unit/" },
       {
-        text: packageJson.latestNugetVersion,
+        text: pkg["latestReleaseVersion"],
         items: [
           {
             text: "Release notes",
             link:
               "https://github.com/2chevskii/unit/releases/tag/v" +
-              packageJson.latestNugetVersion,
+              pkg["latestReleaseVersion"],
           },
         ],
       },
     ],
-    footer: {
-      message: `Built with <a href="https://vitepress.dev">VitePress</a> | API version: <code>${packageJson.version}</code>`,
-    },
+    socialLinks: [
+      { icon: "github", link: "https://github.com/2chevskii/unit" },
+      {
+        icon: { svg: nugetIcon },
+        link: "https://www.nuget.org/packages/Dvchevskii.Unit",
+      },
+    ],
     sidebar: [
       {
         text: "Guide",
@@ -42,7 +50,6 @@ export default defineConfig({
       },
       {
         text: "API",
-        link: "/api/",
         items: [
           {
             text: "Dvchevskii.Unit",
@@ -57,17 +64,8 @@ export default defineConfig({
         ],
       },
     ],
-
-    socialLinks: [
-      { icon: "github", link: "https://github.com/2chevskii/unit" },
-      {
-        icon: {
-          svg: nugetIcon,
-        },
-        link: "https://www.nuget.org/packages/Dvchevskii.Unit",
-      },
-    ],
-
-    search: { provider: "local" },
+    footer: {
+      message: `Built with <a href="https://vitepress.dev">VitePress</a> | API version: <code>${pkg["version"]}</code><br/>Released under the MIT license. All rights reserved`,
+    },
   },
 });

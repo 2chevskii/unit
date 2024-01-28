@@ -1,7 +1,7 @@
 <script setup>
 import packageJson from '../package.json';
 
-const packageVersion = packageJson.latestNugetVersion;
+const packageVersion = packageJson['latestReleaseVersion'];
 
 </script>
 

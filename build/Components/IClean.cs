@@ -27,13 +27,7 @@ interface IClean : ITest
         _ =>
             _.Executes(
                 () =>
-                    new[]
-                    {
-                        PackagesDirectory,
-                        LibrariesDirectory,
-                        TestResultsDirectory,
-                        DocsArtifactsDirectory
-                    }.ForEach(x =>
+                    ArtifactPaths.All.ForEach(x =>
                     {
                         Log.Debug("Cleaning directory: {Directory}", x);
                         x.CreateOrCleanDirectory();

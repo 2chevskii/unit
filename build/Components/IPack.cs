@@ -12,7 +12,7 @@ interface IPack : ICompile
                             settings
                                 .EnableNoBuild()
                                 .SetVersion(Version.SemVer)
-                                .SetOutputDirectory(PackagesDirectory)
+                                .SetOutputDirectory(ArtifactPaths.Packages)
                                 .SetConfiguration(Configuration)
                         )
                 );

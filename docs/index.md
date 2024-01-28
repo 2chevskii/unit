@@ -10,7 +10,7 @@ hero:
       link: /guide/installation
     - theme: alt
       text: API
-      link: /api/
+      link: /api/Dvchevskii.Unit/
 
 features:
   - title: Simple and easy to use API
