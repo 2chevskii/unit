@@ -100,11 +100,11 @@
               "DocsPreview",
               "DocsRestore",
               "DownloadReleaseAssets",
-              "EnsureHasNugetSource",
-              "ListNugetSources",
+              "EnsureHasNugetFeed",
               "NugetPush",
               "Pack",
               "PatchPackageVersion",
+              "ReadNugetSources",
               "Restore",
               "Test"
             ]
@@ -139,11 +139,11 @@
               "DocsPreview",
               "DocsRestore",
               "DownloadReleaseAssets",
-              "EnsureHasNugetSource",
-              "ListNugetSources",
+              "EnsureHasNugetFeed",
               "NugetPush",
               "Pack",
               "PatchPackageVersion",
+              "ReadNugetSources",
               "Restore",
               "Test"
             ]

@@ -21,21 +21,31 @@ interface IControlNuGetSources : INukeBuild
             RegexOptions.Multiline
         );
 
-    NugetSource[] NugetSources { get; set; }
     Target ReadNugetSources =>
-        _ => _.Unlisted().Executes(() => NugetSources = ReadSources().ToArray());
+        _ => _.Unlisted().Executes(() => NugetSource.Sources = ReadSources().ToArray());
 
     Target EnsureHasNugetFeed =>
         _ =>
             _.Unlisted()
                 .Requires(() => NugetFeed)
                 .DependsOn(ReadNugetSources)
-                .OnlyWhenDynamic(() => NugetSources.All(x => x.Uri != NugetFeed))
+                .OnlyWhenDynamic(() => NugetSource.Sources.All(x => x.Uri != NugetFeed))
                 .Executes(
                     () =>
                         DotNetTasks.DotNetNuGetAddSource(settings =>
                             settings.SetName(NugetSourceName).SetSource(NugetFeed.ToString())
-                        )
+                        ),
+                    () =>
+                        NugetSource.Sources = NugetSource
+                            .Sources.Append(
+                                new NugetSource
+                                {
+                                    IsEnabled = true,
+                                    Name = NugetSourceName,
+                                    Uri = NugetFeed
+                                }
+                            )
+                            .ToArray()
                 );
 
     IEnumerable<NugetSource> ReadSources()
@@ -85,6 +95,8 @@ interface IControlNuGetSources : INukeBuild
 
 public readonly struct NugetSource
 {
+    public static NugetSource[] Sources;
+
     public string Name { get; init; }
     public Uri Uri { get; init; }
     public bool IsEnabled { get; init; }
