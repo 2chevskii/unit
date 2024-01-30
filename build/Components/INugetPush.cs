@@ -37,7 +37,7 @@ interface INugetPush : ICreateGitHubRelease, IControlNuGetSources
 
     Target DownloadReleaseAssets =>
         _ =>
-            _.Requires(() => GitHubActions.Instance.Token)
+            _.Requires(() => !string.IsNullOrEmpty(GitHubActions.Instance.Token))
                 .Executes(async () =>
                 {
                     Release release = await GitHubTasks.GitHubClient.Repository.Release.Get(
