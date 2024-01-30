@@ -55,19 +55,24 @@ interface ICreateGitHubRelease : IHazVersion, IHazGitRepository, IHazArtifacts
                         }
                         select GitHubTasks
                             .GitHubClient.Repository.Release.UploadAsset(release, assetUpload)
-                            .ContinueWith(task => stream.Dispose());
+                            .ContinueWith(task =>
+                            {
+                                Log.Debug("Uploaded release artifact {Filename}", filename);
+                                stream.Dispose();
+                            });
 
                     await Task.WhenAll(uploadTasks);
                 });
 
     IEnumerable<AbsolutePath> GetPackageAssets() =>
-        ArtifactPaths.Packages.GetFiles("*.nupkg").ToArray();
+        ArtifactPaths.Packages.GetFiles("*.*nupkg").ToArray();
 
     IEnumerable<AbsolutePath> PrepareAndGetLibraryAssets() =>
         from dir in ArtifactPaths.Libraries.GetDirectories().ToArray()
         let tarGzPath = ArtifactPaths.Libraries / dir.Name + ".tar.gz"
         select new Func<AbsolutePath>(() =>
         {
+            Log.Debug("Compressing archive directory {DirPath} to {TarballPath}", dir, tarGzPath);
             dir.TarGZipTo(tarGzPath, fileMode: FileMode.Create);
             return tarGzPath;
         })();
