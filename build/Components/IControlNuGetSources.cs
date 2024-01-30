@@ -13,7 +13,7 @@ interface IControlNuGetSources : INukeBuild
     [Parameter]
     Uri NugetFeed => TryGetValue(() => NugetFeed);
 
-    string NugetSourceName => NugetFeed.Host;
+    string NugetSourceName => NugetFeed.Host.Split('.').TakeLast(2).JoinDot();
 
     Regex NuGetSourceRegex =>
         new Regex(
