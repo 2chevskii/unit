@@ -5,6 +5,9 @@ using Nuke.Common.Tools.DotNet;
 
 interface ICompile : IHazArtifacts, IRestore, IHazConfiguration, IHazVersion
 {
+    [Parameter]
+    bool CopyLibs => TryGetValue<bool?>(() => CopyLibs).GetValueOrDefault();
+
     Target CompileMain =>
         _ =>
             _.DependsOn(Restore)
@@ -49,7 +52,4 @@ interface ICompile : IHazArtifacts, IRestore, IHazConfiguration, IHazVersion
                 .EnableNoDependencies()
                 .SetConfiguration(Configuration)
                 .SetVersion(Version.SemVer);
-
-    [Parameter]
-    bool CopyLibs => TryGetValue<bool?>(() => CopyLibs).GetValueOrDefault();
 }

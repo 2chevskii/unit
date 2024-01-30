@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
         with: { fetch-depth: 0 }
       - name: 🛠️ Build release assets
-        run: ./build.sh pack --configuration Release
+        run: ./build.sh pack --configuration Release --copy-libs
       - name: 🚀 Create GitHub release and upload asset files
         run: ./build.sh create-github-release
         env:
