@@ -1,6 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Authors>2CHEVSKII</Authors>
+    <PackageProjectUrl>https://2chevskii.github.io/unit/</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup Label="Copyright">
