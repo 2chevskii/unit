@@ -13,6 +13,8 @@ jobs:
         with: { fetch-depth: 0 }
       - name: 🔽 Download release assets
         run: ./build.sh download-release-assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: 🚚 Push packages to NuGet feed (nuget.org)
         run: ./build.sh nuget-push --nuget-feed 'https://api.nuget.org/v3/index.json'
         env:
