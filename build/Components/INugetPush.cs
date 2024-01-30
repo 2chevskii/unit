@@ -19,7 +19,7 @@ interface INugetPush : ICreateGitHubRelease, IControlNuGetSources
 
     Target NugetPush =>
         _ =>
-            _.Requires(() => NugetApiKey)
+            _.Requires(() => !string.IsNullOrEmpty(NugetApiKey))
                 .Requires(() => NugetFeed)
                 .DependsOn(EnsureHasNugetFeed)
                 .Executes(
