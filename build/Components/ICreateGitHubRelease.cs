@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Nuke.Common;
 using Nuke.Common.CI.GitHubActions;
-using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.Tools.GitHub;
 using Octokit;
@@ -76,45 +75,4 @@ interface ICreateGitHubRelease : IHazVersion, IHazGitRepository, IHazArtifacts
             dir.TarGZipTo(tarGzPath, fileMode: FileMode.Create);
             return tarGzPath;
         })();
-
-    async Task<Release> GetOrCreateRelease()
-    {
-        long repositoryId = await GetRepositoryId();
-
-        Release release;
-
-        try
-        {
-            release = await GitHubTasks.GitHubClient.Repository.Release.Create(
-                repositoryId,
-                new NewRelease(TagName)
-                {
-                    Name = ReleaseName,
-                    Draft = true,
-                    Prerelease = !string.IsNullOrEmpty(Version.PreReleaseLabel),
-                }
-            );
-        }
-        catch
-        {
-            release = await GitHubTasks.GitHubClient.Repository.Release.Get(repositoryId, TagName);
-        }
-
-        return release;
-    }
-}
-
-interface IHazGitRepository : INukeBuild
-{
-    [Required]
-    [GitRepository]
-    GitRepository GitRepository => TryGetValue(() => GitRepository);
-
-    Task<long> GetRepositoryId() =>
-        GitHubTasks
-            .GitHubClient.Repository.Get(
-                GitRepository.GetGitHubOwner(),
-                GitRepository.GetGitHubName()
-            )
-            .ContinueWith(response => response.Result.Id);
 }

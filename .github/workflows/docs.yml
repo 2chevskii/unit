@@ -1,6 +1,6 @@
 on:
-  push:
-    branches: master
+  release:
+    types: published
 jobs:
   build:
     runs-on: ubuntu-22.04

@@ -1,6 +1,6 @@
 using Nuke.Common;
 
-class Build : NukeBuild, IPack, IClean, INugetPush, IDocs
+class Build : NukeBuild, IPack, IClean, INugetPush, IDocs, IControlNuGetSources
 {
     public static int Main() => Execute<Build>(x => x.From<ICompile>().CompileMain);
 
