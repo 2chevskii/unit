@@ -9,6 +9,7 @@ export default defineConfig({
   title: "Dvchevskii.Unit",
   description: "Dvchevskii.Unit package documentation",
   appearance: "force-dark",
+  assetsDir: "public",
   themeConfig: {
     search: { provider: "local" },
     nav: [
