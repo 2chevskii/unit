@@ -15,9 +15,13 @@ namespace Dvchevskii.Unit
 
         public static bool operator ==(Unit lhs, object rhs) => lhs.Equals(rhs);
 
+        public static bool operator ==(object lhs, Unit rhs) => rhs.Equals(lhs);
+
         public static bool operator !=(Unit lhs, Unit rhs) => !lhs.Equals(rhs);
 
         public static bool operator !=(Unit lhs, object rhs) => !lhs.Equals(rhs);
+
+        public static bool operator !=(object lhs, Unit rhs) => !rhs.Equals(lhs);
 
         public static bool operator >(Unit lhs, Unit rhs) => lhs.CompareTo(rhs).Equals(1);
 
@@ -63,7 +67,7 @@ namespace Dvchevskii.Unit
             return false;
         }
 
-        public override int GetHashCode() => 804741542;
+        public override int GetHashCode() => 804741551;
 
         public bool Equals(Unit other) => true;
 
