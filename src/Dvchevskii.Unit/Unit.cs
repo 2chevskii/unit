@@ -2,15 +2,22 @@
 
 namespace Dvchevskii.Unit
 {
-    public readonly struct Unit : IEquatable<Unit>, IComparable<Unit>
+    public readonly struct Unit : IEquatable<object>, IEquatable<Unit>, IComparable<Unit>
     {
         private const string STRING_REPRESENTATION = "()";
 
+        // ReSharper disable once UnassignedReadonlyField
         public static readonly Unit Default;
+
+        #region Operators
 
         public static bool operator ==(Unit lhs, Unit rhs) => lhs.Equals(rhs);
 
+        public static bool operator ==(Unit lhs, object rhs) => lhs.Equals(rhs);
+
         public static bool operator !=(Unit lhs, Unit rhs) => !lhs.Equals(rhs);
+
+        public static bool operator !=(Unit lhs, object rhs) => !lhs.Equals(rhs);
 
         public static bool operator >(Unit lhs, Unit rhs) => lhs.CompareTo(rhs).Equals(1);
 
@@ -41,6 +48,8 @@ namespace Dvchevskii.Unit
                     return false;
             }
         }
+
+        #endregion
 
         public override string ToString() => STRING_REPRESENTATION;
 
