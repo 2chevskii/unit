@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 
 // ReSharper disable EqualExpressionComparison
+#pragma warning disable CS1718
 
 namespace Dvchevskii.Unit.Tests;
 
