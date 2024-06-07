@@ -18,9 +18,6 @@
           "type": "boolean",
           "description": "Indicates to continue a previously failed build attempt"
         },
-        "CopyLibs": {
-          "type": "boolean"
-        },
         "Help": {
           "type": "boolean",
           "description": "Shows the help text for this build assembly"
@@ -82,15 +79,7 @@
             "type": "string",
             "enum": [
               "Clean",
-              "CleanArtifacts",
-              "CleanProjects",
               "Compile",
-              "CompileMain",
-              "CompileTests",
-              "CopyLibsOutput",
-              "Coverage",
-              "CoverageCollect",
-              "CoverageReport",
               "CreateGitHubRelease",
               "Docs",
               "DocsClean",
@@ -121,15 +110,7 @@
             "type": "string",
             "enum": [
               "Clean",
-              "CleanArtifacts",
-              "CleanProjects",
               "Compile",
-              "CompileMain",
-              "CompileTests",
-              "CopyLibsOutput",
-              "Coverage",
-              "CoverageCollect",
-              "CoverageReport",
               "CreateGitHubRelease",
               "Docs",
               "DocsClean",

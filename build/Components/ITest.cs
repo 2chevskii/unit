@@ -8,9 +8,9 @@ using Nuke.Common.Tools.Coverlet;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.ReportGenerator;
 
-interface ITest : ICompile
+interface ITest
 {
-    AbsolutePath CoverageXmlPath => ArtifactPaths.Coverage / $"coverage.{MainProject.Name}.xml";
+    /*AbsolutePath CoverageXmlPath => ArtifactPaths.Coverage / $"coverage.{MainProject.Name}.xml";
     AbsolutePath CoverageHtmlDirectory => ArtifactPaths.Coverage / $"report.{MainProject.Name}";
 
     Target Test =>
@@ -82,5 +82,5 @@ interface ITest : ICompile
                 .SetResultsDirectory(ArtifactPaths.TestResults);
 
     [Parameter]
-    bool HtmlTestResults => TryGetValue<bool?>(() => HtmlTestResults).GetValueOrDefault();
+    bool HtmlTestResults => TryGetValue<bool?>(() => HtmlTestResults).GetValueOrDefault();*/
 }

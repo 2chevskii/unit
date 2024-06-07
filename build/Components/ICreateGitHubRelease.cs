@@ -12,9 +12,10 @@ using Serilog;
 using ContentType = Azure.Core.ContentType;
 using FileMode = System.IO.FileMode;
 
-interface ICreateGitHubRelease : IHazVersion, IHazGitRepository, IHazArtifacts
+interface ICreateGitHubRelease : IHazGitRepository, IHazArtifacts
 {
-    string ReleaseName => Version.MajorMinorPatch;
+    string ReleaseName => /*Version.MajorMinorPatch*/
+        string.Empty;
     string TagName => $"v{ReleaseName}";
 
     Target CreateGitHubRelease =>
@@ -37,7 +38,9 @@ interface ICreateGitHubRelease : IHazVersion, IHazGitRepository, IHazArtifacts
                         {
                             Name = ReleaseName,
                             Draft = true,
-                            Prerelease = !string.IsNullOrEmpty(Version.PreReleaseLabel),
+                            Prerelease = !string.IsNullOrEmpty( /*Version.PreReleaseLabel*/
+                                string.Empty
+                            ),
                             Body = "# TODO: Write release notes here"
                         }
                     );

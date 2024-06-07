@@ -1,14 +1,23 @@
 using Nuke.Common;
+using Nuke.Common.IO;
+using Nuke.Common.Utilities.Collections;
 
-class Build : NukeBuild, IPack, IClean, INugetPush, IDocs, IControlNuGetSources
+partial class Build : NukeBuild, IPack, INugetPush, IDocs
 {
-    public static int Main() => Execute<Build>(x => x.From<ICompile>().CompileMain);
+    public static int Main() => Execute<Build>(x => x.Compile);
 
     protected override void OnBuildInitialized()
     {
-        From<IHazArtifacts>().InitializeArtifactsDirectories();
+        CreateArtifactDirectories();
     }
+}
 
-    T From<T>()
-        where T : class => this as T;
+partial class Build
+{
+    ArtifactPathCollection ArtifactPaths => new();
+
+    void CreateArtifactDirectories()
+    {
+        ArtifactPaths.All.ForEach(x => x.CreateDirectory());
+    }
 }

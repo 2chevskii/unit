@@ -3,7 +3,7 @@ using Nuke.Common.IO;
 
 interface IHazArtifacts : INukeBuild
 {
-    ArtifactPathCollection ArtifactPaths =>
+    /*ArtifactPathCollection ArtifactPaths =>
         new ArtifactPathCollection { Root = RootDirectory / "artifacts" };
 
     void InitializeArtifactsDirectories()
@@ -25,5 +25,5 @@ interface IHazArtifacts : INukeBuild
         public AbsolutePath Coverage => TestResults / "coverage";
         public AbsolutePath Docs => Root / "docs";
         public AbsolutePath[] All => [Root, Packages, Libraries, TestResults, Coverage, Docs];
-    }
+    }*/
 }

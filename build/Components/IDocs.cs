@@ -6,7 +6,7 @@ using Nuke.Common.Tools.Npm;
 using Nuke.Common.Utilities;
 using Serilog;
 
-interface IDocs : IHazArtifacts, IRestore, IHazVersion, IHazGitHubRelease
+interface IDocs : IHazArtifacts, IHazGitHubRelease
 {
     AbsolutePath DocsDirectory => RootDirectory / "docs";
     AbsolutePath DocsDistDirectory => DocsDirectory / ".vitepress" / "dist";
@@ -69,8 +69,8 @@ interface IDocs : IHazArtifacts, IRestore, IHazVersion, IHazGitHubRelease
                     Dictionary<string, object> props = DocsPackageJson.ReadJson<
                         Dictionary<string, object>
                     >();
-                    props["version"] = Version.SemVer;
-                    Log.Debug("Docs property 'version' set to {Version}", Version.SemVer);
+                    // props["version"] = Version.SemVer;
+                    // Log.Debug("Docs property 'version' set to {Version}", Version.SemVer);
                     props["latestReleaseVersion"] = LatestGitHubReleaseTag.OriginalVersion;
                     Log.Debug(
                         "Docs property 'latestReleaseVersion' set to {LatestReleaseVersion}",
