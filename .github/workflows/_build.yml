@@ -12,9 +12,9 @@ jobs:
         with:
           global-json-file: ./global.json
       - name: 🛠️ Compile 'Release' configuration
-        run: ./build.sh CompileSrc --configuration Release
+        run: ./build.sh Compile --configuration Release
       - name: 📦 Create NuGet packages
-        run: ./build.sh Pack ArtifactsPkg --configuration Release --skip CompileSrc
+        run: ./build.sh Pack ArtifactsPkg --configuration Release --skip Compile
       - name: 📤 Upload NuGet packages
         uses: actions/upload-artifact@v4
         with:

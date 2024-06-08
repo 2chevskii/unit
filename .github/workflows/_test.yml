@@ -11,11 +11,11 @@ jobs:
         with:
           global-json-file: ./global.json
       - name: 🛠️ Compile test projects
-        run: ./build.sh CompileTests
+        run: ./build.sh Compile --configuration Release
       - name: 🧪 Run unit tests
-        run: ./build.sh Test --html-test-results --skip CompileTests
+        run: ./build.sh Test --html-test-results --skip Compile
       - name: 📝 Collect coverage reports
-        run: ./build.sh CoverageCollect CoverageReport --skip CompileTests
+        run: ./build.sh CoverageCollect CoverageReport --skip Compile
       - name: 📤 Upload test results report
         uses: actions/upload-artifact@v4
         with:
