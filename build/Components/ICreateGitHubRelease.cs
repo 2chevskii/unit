@@ -12,7 +12,7 @@ using Serilog;
 using ContentType = Azure.Core.ContentType;
 using FileMode = System.IO.FileMode;
 
-interface ICreateGitHubRelease : IHazGitRepository, IHazArtifacts
+interface ICreateGitHubRelease : IHazGitRepository
 {
     string ReleaseName => /*Version.MajorMinorPatch*/
         string.Empty;
@@ -22,7 +22,7 @@ interface ICreateGitHubRelease : IHazGitRepository, IHazArtifacts
         _ =>
             _.Requires(() => !string.IsNullOrEmpty(GitHubActions.Instance.Token))
                 .Requires(() => GitHubActions.Instance.Ref.StartsWith("refs/tags/"))
-                .Executes(async () =>
+                .Executes(/*async () =>
                 {
                     long repositoryId = await GetRepositoryId();
                     Log.Information(
@@ -38,7 +38,7 @@ interface ICreateGitHubRelease : IHazGitRepository, IHazArtifacts
                         {
                             Name = ReleaseName,
                             Draft = true,
-                            Prerelease = !string.IsNullOrEmpty( /*Version.PreReleaseLabel*/
+                            Prerelease = !string.IsNullOrEmpty( /*Version.PreReleaseLabel#1#
                                 string.Empty
                             ),
                             Body = "# TODO: Write release notes here"
@@ -64,9 +64,9 @@ interface ICreateGitHubRelease : IHazGitRepository, IHazArtifacts
                             });
 
                     await Task.WhenAll(uploadTasks);
-                });
+                }*/);
 
-    IEnumerable<AbsolutePath> GetPackageAssets() =>
+    /*IEnumerable<AbsolutePath> GetPackageAssets() =>
         ArtifactPaths.Packages.GetFiles("*.*nupkg").ToArray();
 
     IEnumerable<AbsolutePath> PrepareAndGetLibraryAssets() =>
@@ -77,5 +77,5 @@ interface ICreateGitHubRelease : IHazGitRepository, IHazArtifacts
             Log.Debug("Compressing archive directory {DirPath} to {TarballPath}", dir, tarGzPath);
             dir.TarGZipTo(tarGzPath, fileMode: FileMode.Create);
             return tarGzPath;
-        })();
+        })();*/
 }

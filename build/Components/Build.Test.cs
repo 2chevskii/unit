@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Extensions;
 using Nuke.Common;
 using Nuke.Common.ProjectModel;
@@ -29,7 +30,11 @@ partial class Build
                 );
 
     Configure<DotNetTestSettings> TestSettingsBase =>
-        settings => settings.EnableNoBuild().SetConfiguration(Configuration);
+        settings =>
+            settings
+                .EnableNoBuild()
+                .SetConfiguration(Configuration)
+                .SetResultsDirectory(TestResultsDirectory);
 
     Func<Project, Configure<DotNetTestSettings>> TestSettingsLoggers =>
         project =>

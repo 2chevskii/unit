@@ -1,0 +1,26 @@
+on: workflow_call
+jobs:
+  build-release:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: ✅ Repository checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: ⚙️ Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: ./global.json
+      - name: 🛠️ Compile 'Release' configuration
+        run: ./build.sh CompileSrc --configuration Release
+      - name: 📦 Create NuGet packages
+        run: ./build.sh Pack ArtifactsPkg --configuration Release --skip CompileSrc
+      - name: 📤 Upload NuGet packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: |
+            artifacts/pkg/*.nupkg
+            artifacts/pkg/*.snupkg
+env:
+  NUKE_NO_LOGO: true

@@ -1,0 +1,35 @@
+on: workflow_call
+jobs:
+  unit-test:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: ✅ Repository checkout
+        uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: ⚙️ Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: ./global.json
+      - name: 🛠️ Compile test projects
+        run: ./build.sh CompileTests
+      - name: 🧪 Run unit tests
+        run: ./build.sh Test --html-test-results --skip CompileTests
+      - name: 📝 Collect coverage reports
+        run: ./build.sh CoverageCollect CoverageReport --skip CompileTests
+      - name: 📤 Upload test results report
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: artifacts/test_results/*.html
+      - name: 📤 Upload coverage reports (cobertura)
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-cobertura
+          path: artifacts/test_results/coverage/*.xml
+      - name: 📤 Upload coverage reports (html)
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html
+          path: artifacts/test_results/coverage/html/
+env:
+  NUKE_NO_LOGO: true

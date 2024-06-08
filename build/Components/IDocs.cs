@@ -6,7 +6,7 @@ using Nuke.Common.Tools.Npm;
 using Nuke.Common.Utilities;
 using Serilog;
 
-interface IDocs : IHazArtifacts, IHazGitHubRelease
+interface IDocs : IHazGitHubRelease
 {
     AbsolutePath DocsDirectory => RootDirectory / "docs";
     AbsolutePath DocsDistDirectory => DocsDirectory / ".vitepress" / "dist";
@@ -84,13 +84,13 @@ interface IDocs : IHazArtifacts, IHazGitHubRelease
         _ =>
             _.DependsOn(DocsCompile)
                 .Executes(
-                    () =>
+                    /*() =>
                         FileSystemTasks.CopyDirectoryRecursively(
                             DocsDistDirectory,
                             ArtifactPaths.Docs / "dist",
                             DirectoryExistsPolicy.Merge,
                             FileExistsPolicy.Overwrite
-                        )
+                        )*/
                 )
                 .Unlisted();
 }

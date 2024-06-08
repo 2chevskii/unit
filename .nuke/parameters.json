@@ -1,4 +1,7 @@
 {
   "$schema": "./build.schema.json",
-  "Sln": "Dvchevskii.Unit.sln"
+  "Sln": "Dvchevskii.Unit.sln",
+  "TestProjectsMap": {
+    "Dvchevskii.Unit": "Dvchevskii.Unit.Tests"
+  }
 }
