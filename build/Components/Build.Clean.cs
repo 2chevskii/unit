@@ -14,7 +14,7 @@ partial class Build
                             .CombineWith(
                                 Configuration.All,
                                 (settings, configuration) =>
-                                    DotNetCleanSettingsExtensions.SetConfiguration<DotNetCleanSettings>(settings, configuration)
+                                    settings.SetConfiguration(configuration)
                             )
                     )
             );
