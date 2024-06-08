@@ -13,9 +13,9 @@ jobs:
       - name: 🛠️ Compile test projects
         run: ./build.sh Compile --configuration Release
       - name: 🧪 Run unit tests
-        run: ./build.sh Test --html-test-results --skip Compile
+        run: ./build.sh Test --configuration Release --html-test-results --skip Compile
       - name: 📝 Collect coverage reports
-        run: ./build.sh CoverageCollect CoverageReport --skip Compile
+        run: ./build.sh CoverageCollect CoverageReport --configuration Release --skip Compile
       - name: 📤 Upload test results report
         uses: actions/upload-artifact@v4
         with:

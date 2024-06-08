@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Extensions;
 using Nuke.Common;
 using Nuke.Common.ProjectModel;
