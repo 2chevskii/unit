@@ -6,9 +6,10 @@ partial class Build
 {
     Target Compile =>
         _ =>
-            _.Executes(
-                () => DotNetTasks.DotNetBuild(settings => settings.Apply(BuildSettingsBase))
-            );
+            _.DependsOn(Restore)
+                .Executes(
+                    () => DotNetTasks.DotNetBuild(settings => settings.Apply(BuildSettingsBase))
+                );
 
     Configure<DotNetBuildSettings> BuildSettingsBase =>
         settings =>
