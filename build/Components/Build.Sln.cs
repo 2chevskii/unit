@@ -9,9 +9,6 @@ partial class Build
     [Solution]
     readonly Solution Sln;
 
-    [Parameter]
-    readonly Dictionary<string, string> TestProjectsMap;
-
     SolutionFolder SrcFolder;
     SolutionFolder TestFolder;
 
@@ -35,23 +32,14 @@ partial class Build
 
     Project GetTestProjectForSrcProject(Project srcProject)
     {
-        if (!TestProjectsMap.TryGetValue(srcProject.Name, out string name))
-        {
-            return null;
-        }
-
-        return TestProjects.First(x => x.Name == name);
+        return TestProjects.First(x => x.Name == $"{srcProject.Name}.Tests");
     }
 
     Project GetSrcProjectForTestProject(Project testProject)
     {
-        var reverseTestProjectsMap = TestProjectsMap.ToDictionary(k => k.Value, v => v.Key);
-
-        if (!reverseTestProjectsMap.TryGetValue(testProject.Name, out string name))
-        {
-            return null;
-        }
-
-        return SrcProjects.First(x => x.Name == name);
+        return SrcProjects.First(x =>
+            x.Name
+            == testProject.Name[..testProject.Name.LastIndexOf(".Tests", StringComparison.Ordinal)]
+        );
     }
 }
