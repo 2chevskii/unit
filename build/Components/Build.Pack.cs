@@ -10,13 +10,13 @@ partial class Build
                 {
                     DotNetTasks.DotNetPack(settings =>
                         settings
+                            .EnableNoRestore()
+                            .EnableNoBuild()
+                            .EnableNoDependencies()
+                            .SetVerbosity(DotNetVerbosity.normal)
                             .SetOutputDirectory(PackagesDirectory)
                             .SetConfiguration(Configuration)
-                            .EnableNoBuild()
-                            .EnableNoRestore()
-                            .EnableNoDependencies()
                             .SetVersion(Version.FullSemVer)
-                            .SetVerbosity(DotNetVerbosity.normal)
                     );
                 });
 }

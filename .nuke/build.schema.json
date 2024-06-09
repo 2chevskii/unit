@@ -82,6 +82,7 @@
             "type": "string",
             "enum": [
               "Clean",
+              "CleanArtifacts",
               "Compile",
               "Coverage",
               "CoverageCollect",
@@ -111,6 +112,7 @@
             "type": "string",
             "enum": [
               "Clean",
+              "CleanArtifacts",
               "Compile",
               "Coverage",
               "CoverageCollect",

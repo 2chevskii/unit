@@ -28,7 +28,6 @@
     <Compile Remove="Components\ICreateGitHubRelease.cs"/>
     <None Include="Components\ICreateGitHubRelease.cs"/>
     <Compile Remove="Components\IDocs.cs"/>
-    <None Include="Components\IDocs.cs"/>
     <Compile Remove="Components\IHazGitHubRelease.cs"/>
     <None Include="Components\IHazGitHubRelease.cs"/>
     <Compile Remove="Components\IHazGitRepository.cs"/>

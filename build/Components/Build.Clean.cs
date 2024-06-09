@@ -1,6 +1,8 @@
 ﻿using Nuke.Common;
+using Nuke.Common.IO;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
+using Serilog;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 partial class Build
@@ -19,4 +21,28 @@ partial class Build
                             )
                     )
             );
+
+    Target CleanArtifacts =>
+        _ =>
+            _.Executes(() =>
+            {
+                Log.Information("Cleaning artifact directories");
+                AbsolutePath[] directoriesToClean =
+                [
+                    ArtifactsDirectory,
+                    PackagesDirectory,
+                    TestResultsDirectory,
+                    CoverageDirectory,
+                    CoverageHtmlDirectory,
+                ];
+                foreach (AbsolutePath directory in directoriesToClean)
+                {
+                    if (!directory.DirectoryExists())
+                    {
+                        continue;
+                    }
+                    Log.Debug("Cleaning {Directory}", RootDirectory.GetRelativePathTo(directory));
+                    directory.CreateOrCleanDirectory();
+                }
+            });
 }

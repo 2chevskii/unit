@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Nuke.Common;
 using Nuke.Common.ProjectModel;
 
 partial class Build
