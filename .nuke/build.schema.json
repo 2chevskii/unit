@@ -6,13 +6,6 @@
     "build": {
       "type": "object",
       "properties": {
-        "CodecovReport": {
-          "type": "boolean"
-        },
-        "CodecovToken": {
-          "type": "string",
-          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
-        },
         "Configuration": {
           "type": "string",
           "enum": [
@@ -60,6 +53,9 @@
           "type": "boolean",
           "description": "Disables displaying the NUKE logo"
         },
+        "NugetFeed": {
+          "type": "string"
+        },
         "Partition": {
           "type": "string",
           "description": "Partition to use on CI"
@@ -89,7 +85,8 @@
               "Compile",
               "Coverage",
               "CoverageCollect",
-              "CoverageReport",
+              "CoverageReportHtml",
+              "EnsureNugetFeedEnabled",
               "Pack",
               "Restore",
               "Test"
@@ -110,7 +107,8 @@
               "Compile",
               "Coverage",
               "CoverageCollect",
-              "CoverageReport",
+              "CoverageReportHtml",
+              "EnsureNugetFeedEnabled",
               "Pack",
               "Restore",
               "Test"

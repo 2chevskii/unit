@@ -1,25 +1,20 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using Nuke.Common;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.Coverlet;
 using Nuke.Common.Tools.ReportGenerator;
+using static Nuke.Common.Tools.Coverlet.CoverletTasks;
+using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
 
 [Requires<CoverletTasks>(Version = "6.0.2")]
 [Requires<ReportGeneratorTasks>(Version = "5.3.6")]
 partial class Build
 {
-    [Parameter, Secret]
-    readonly string CodecovToken;
-
     [Parameter]
     readonly bool CoverageHtmlReport;
 
-    [Parameter]
-    readonly bool CodecovReport;
-
-    Target Coverage => _ => _.DependsOn(CoverageCollect, CoverageReport);
+    Target Coverage => _ => _.DependsOn(CoverageCollect, CoverageReportHtml);
 
     Target CoverageCollect =>
         _ =>
@@ -27,7 +22,7 @@ partial class Build
                 .DependsOn(Compile)
                 .Executes(
                     () =>
-                        CoverletTasks.Coverlet(settings =>
+                        Coverlet(settings =>
                             settings
                                 .Apply(CoverletSettingsBase)
                                 .CombineWith(
@@ -38,40 +33,17 @@ partial class Build
                         )
                 );
 
-    Target CoverageReport =>
+    Target CoverageReportHtml =>
         _ =>
-            _.DependsOn(CoverageCollect)
-                .Executes(() =>
-                {
-                    if (CoverageHtmlReport)
-                    {
-                        ReportGeneratorTasks.ReportGenerator(settings =>
+            _.OnlyWhenStatic(() => CoverageHtmlReport)
+                .DependsOn(Compile)
+                .DependsOn(CoverageCollect)
+                .Executes(
+                    () =>
+                        ReportGenerator(settings =>
                             settings.Apply(ReportGeneratorSettingsBase)
-                        );
-                    }
-
-                    /*
-                     * Disabled, need to implement support for new codecov tool
-                     */
-                    /*if (CodecovReport)
-                    {
-                        if (string.IsNullOrEmpty(CodecovToken))
-                        {
-                            throw new Exception("Codecov token not found");
-                        }
-
-                        CodecovTasks.Codecov(settings =>
-                            settings
-                                .SetFiles(
-                                    CoverageDirectory.GlobFiles("*.xml").Select(x => x.ToString())
-                                )
-                                .SetBuild(Version.FullSemVer)
-                                .SetBranch(GitRepository.Branch)
-                                .SetSha(GitRepository.Commit)
-                                .SetToken(CodecovToken)
-                        );
-                    }*/
-                });
+                        )
+                );
 
     Configure<CoverletSettings> CoverletSettingsBase =>
         settings => settings.SetFormat("cobertura").SetTarget("dotnet");
@@ -92,6 +64,6 @@ partial class Build
         settings =>
             settings
                 .SetReports(CoverageDirectory / "*.xml")
-                .SetReportTypes(ReportTypes.HtmlInline)
-                .SetTargetDirectory(CoverageReportsDirectory);
+                .SetReportTypes(ReportTypes.Html_Dark)
+                .SetTargetDirectory(CoverageHtmlDirectory);
 }

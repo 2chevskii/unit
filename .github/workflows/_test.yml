@@ -10,23 +10,23 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: ./global.json
-      - name: 🛠️ Compile test projects
-        run: ./build.sh Compile --configuration Release
+      - name: 🛠️ Compile (Debug)
+        run: ./build.sh Compile --configuration Debug
       - name: 🧪 Run unit tests
-        run: ./build.sh Test --configuration Release --html-test-results --skip Compile
-      - name: 📝 Collect coverage reports
-        run: ./build.sh CoverageCollect CoverageReport --configuration Release --skip Compile
-      - name: 📤 Upload test results report
+        run: ./build.sh Test --html-test-results --configuration Debug --skip Compile
+      - name: 📝 Collect test coverage information
+        run: ./build.sh Coverage --coverage-html-report --configuration Debug --skip Compile
+      - name: 📤 Upload test results (html)
         uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: artifacts/test_results/*.html
-      - name: 📤 Upload coverage reports (cobertura)
+      - name: 📤 Upload coverage report (cobertura xml)
         uses: actions/upload-artifact@v4
         with:
           name: coverage-cobertura
           path: artifacts/test_results/coverage/*.xml
-      - name: 📤 Upload coverage reports (html)
+      - name: 📤 Upload coverage report (html)
         uses: actions/upload-artifact@v4
         with:
           name: coverage-html

@@ -1,6 +1,7 @@
 ﻿using Nuke.Common;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
+using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 partial class Build
 {
@@ -8,7 +9,7 @@ partial class Build
         _ =>
             _.Executes(
                 () =>
-                    DotNetTasks.DotNetClean(settings =>
+                    DotNetClean(settings =>
                         settings
                             .SetProject(Sln)
                             .CombineWith(

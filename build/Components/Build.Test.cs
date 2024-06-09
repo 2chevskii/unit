@@ -4,6 +4,7 @@ using Nuke.Common;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
+using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 partial class Build
 {
@@ -15,7 +16,7 @@ partial class Build
             _.DependsOn(Compile)
                 .Executes(
                     () =>
-                        DotNetTasks.DotNetTest(settings =>
+                        DotNetTest(settings =>
                             settings
                                 .Apply(TestSettingsBase)
                                 .CombineWith(

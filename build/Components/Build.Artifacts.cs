@@ -8,7 +8,7 @@ partial class Build
     AbsolutePath PackagesDirectory => ArtifactsDirectory / "pkg";
     AbsolutePath TestResultsDirectory => ArtifactsDirectory / "test_results";
     AbsolutePath CoverageDirectory => TestResultsDirectory / "coverage";
-    AbsolutePath CoverageReportsDirectory => CoverageDirectory / "reports";
+    AbsolutePath CoverageHtmlDirectory => CoverageDirectory / "html";
 
     AbsolutePath GetProjectOutputAssemblyPath(Project project) =>
         project.Directory

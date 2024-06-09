@@ -11,11 +11,11 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: ./global.json
-      - name: 🛠️ Compile 'Release' configuration
+      - name: 🛠️ Compile (Release)
         run: ./build.sh Compile --configuration Release
       - name: 📦 Create NuGet packages
-        run: ./build.sh Pack ArtifactsPkg --configuration Release --skip Compile
-      - name: 📤 Upload NuGet packages
+        run: ./build.sh Pack --configuration Release --skip Compile
+      - name: 📤 Upload NuGet packages as workflow artifacts
         uses: actions/upload-artifact@v4
         with:
           name: packages
