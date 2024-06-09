@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Nuke.Common;
+using Nuke.Common.IO;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Utilities;
 using Serilog;
+using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 partial class Build
 {
@@ -14,6 +16,31 @@ partial class Build
 
     [Parameter]
     readonly string NugetFeed;
+
+    [Parameter, Secret]
+    readonly string NugetApiKey;
+
+    Target NugetPush =>
+        _ =>
+            _.Requires(() => NugetFeed)
+                .Requires(() => NugetApiKey)
+                .DependsOn(EnsureNugetFeedEnabled)
+                .Executes(() =>
+                {
+                    var packagesToUpload = PackagesDirectory.GlobFiles("*.{nupkg,snupkg}");
+
+                    var feed = NuGetFeed.FromUri(NugetFeed);
+
+                    DotNetNuGetPush(settings =>
+                        settings
+                            .SetSource(feed.Name)
+                            .SetApiKey(NugetApiKey)
+                            .CombineWith(
+                                packagesToUpload,
+                                (settings, package) => settings.SetTargetPath(package)
+                            )
+                    );
+                });
 
     Target EnsureNugetFeedEnabled =>
         _ =>
@@ -30,14 +57,14 @@ partial class Build
                     if (matchedFeed == null)
                     {
                         Log.Warning("Feed not found, adding");
-                        DotNetTasks.DotNet(
+                        DotNet(
                             $"nuget add source \"{requiredFeed.Uri}\" --name \"{requiredFeed.Name}\""
                         );
                     }
                     else if (!matchedFeed.IsEnabled)
                     {
                         Log.Warning("Feed was found, but not enabled, enabling");
-                        DotNetTasks.DotNet($"nuget enable source \"{requiredFeed.Name}\"");
+                        DotNet($"nuget enable source \"{requiredFeed.Name}\"");
                     }
                     else
                     {

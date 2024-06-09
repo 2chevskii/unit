@@ -6,10 +6,6 @@ jobs:
       - name: ✅ Repository checkout
         uses: actions/checkout@v4
         with: { fetch-depth: 0 }
-      # - name: ⚙️ Setup .NET
-      #   uses: actions/setup-dotnet@v4
-      #   with:
-      #     global-json-file: ./global.json
       - name: 🛠️ Compile (Debug)
         run: ./build.sh Compile --configuration Debug
       - name: 🧪 Run unit tests
