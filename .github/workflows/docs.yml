@@ -11,11 +11,11 @@ jobs:
         uses: actions/checkout@v4
         with: { fetch-depth: 0 }
       - name: 🛠️ Generate documentation
-        run: ./build.sh docs
+        run: ./build.sh Docs
       - name: 💾 Upload github pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: artifacts/docs/dist/
+          path: artifacts/docs/.vitepress/dist
   deploy:
     runs-on: ubuntu-22.04
     needs: build

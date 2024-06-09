@@ -7,5 +7,11 @@ partial class Build : NukeBuild
     protected override void OnBuildInitialized()
     {
         LoadProjectModel();
+        SaveDocsPackageJson();
+    }
+
+    protected override void OnBuildFinished()
+    {
+        RestoreDocsPackageJson();
     }
 }
