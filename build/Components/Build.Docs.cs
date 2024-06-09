@@ -10,12 +10,25 @@ using static Nuke.Common.Tools.Npm.NpmTasks;
 
 partial class Build
 {
+    [Parameter]
+    readonly bool GenerateGhPagesArtifact;
     string docsPackageJsonBackup;
 
     AbsolutePath DocsDirectory => RootDirectory / "docs";
+    AbsolutePath DocsDistDirectory => DocsDirectory / ".vitepress" / "dist";
     AbsolutePath DocsPackageJson => DocsDirectory / "package.json";
+    AbsolutePath DocsArtifactPath => ArtifactsDirectory / "docs" / "gh-pages.tar.gz";
 
-    Target Docs => _ => _.DependsOn(DocsCompile);
+    Target Docs => _ => _.DependsOn(DocsCompile, DocsCreateGitHubPagesArtifact);
+
+    Target DocsCreateGitHubPagesArtifact =>
+        _ =>
+            _.DependsOn(DocsCompile)
+                .OnlyWhenStatic(() => GenerateGhPagesArtifact)
+                .Executes(() =>
+                {
+                    throw new NotImplementedException();
+                });
 
     Target DocsRestore =>
         _ =>
