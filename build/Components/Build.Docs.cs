@@ -54,29 +54,49 @@ partial class Build
     Target DocsPatchPackageJson =>
         _ =>
             _.Before(DocsRestore)
+                .DependsOn(DocsSavePackageJson)
                 .Executes(() =>
                 {
+                    Log.Information(
+                        "Patching {PackageJsonPath}",
+                        RootDirectory.GetRelativePathTo(DocsPackageJson)
+                    );
                     Dictionary<string, object> packageJsonProps = DocsPackageJson.ReadJson<
                         Dictionary<string, object>
                     >();
 
                     packageJsonProps["version"] = Version.SemVer;
+                    Log.Information("Set version to {Version}", Version.SemVer);
                     packageJsonProps["latestReleaseVersion"] = LatestGitHubReleaseTag;
+                    Log.Information(
+                        "Set latest release version to {LatestReleaseVersion}",
+                        LatestGitHubReleaseTag
+                    );
+
                     DocsPackageJson.WriteJson(packageJsonProps);
                 });
 
-    void SaveDocsPackageJson()
-    {
-        Log.Information("Saving docs/package.json");
-        docsPackageJsonBackup = DocsPackageJson.ReadAllText();
-    }
-
-    void RestoreDocsPackageJson()
-    {
-        if (docsPackageJsonBackup != null)
-        {
-            Log.Information("Restoring docs/package.json to pre-build state");
-            DocsPackageJson.WriteAllText(docsPackageJsonBackup);
-        }
-    }
+    Target DocsSavePackageJson =>
+        _ =>
+            _.Executes(() =>
+            {
+                Log.Information(
+                    "Saving {PackageJsonPath}",
+                    RootDirectory.GetRelativePathTo(DocsPackageJson)
+                );
+                docsPackageJsonBackup = DocsPackageJson.ReadAllText();
+            });
+    Target DocsRestorePackageJson =>
+        _ =>
+            _.TriggeredBy(DocsPatchPackageJson)
+                .After(DocsDev, DocsCompile, DocsRestore)
+                .OnlyWhenDynamic(() => docsPackageJsonBackup != null)
+                .Executes(() =>
+                {
+                    Log.Information(
+                        "Restoring {PackageJsonPath} to pre-build state",
+                        RootDirectory.GetRelativePathTo(DocsPackageJson)
+                    );
+                    DocsPackageJson.WriteAllText(docsPackageJsonBackup);
+                });
 }
