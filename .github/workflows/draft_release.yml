@@ -20,7 +20,7 @@ jobs:
           name: packages
           path: artifacts/release/
       - name: 🚀 Create GitHub release and upload asset files
-        run: ./build.sh CreateGithubRelease --release-assets-directory artifacts/release/
+        run: ./build.sh CreateGithubReleaseDraft
         env:
           GITHUB_TOKEN: ${{ github.token }}
     permissions:

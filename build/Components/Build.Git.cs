@@ -3,12 +3,12 @@ using Nuke.Common.Git;
 using Nuke.Common.Tools.GitHub;
 using Nuke.Common.Tools.GitVersion;
 using Octokit;
+using Serilog;
 
 [Requires<GitVersionTasks>(Version = "6.0.0-rc.1")]
 partial class Build
 {
-    [GitRepository]
-    GitRepository GitRepository;
+    [GitRepository] GitRepository GitRepository;
 
     long GitHubRepositoryId;
 
@@ -26,5 +26,7 @@ partial class Build
                     );
 
                     GitHubRepositoryId = repository.Id;
+
+                    Log.Information("Fetched GitHub repository ID: {Id}", GitHubRepositoryId);
                 });
 }

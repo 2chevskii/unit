@@ -28,6 +28,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-summary
-          path: artifacts/coverage/summary
+          path: artifacts/coverage/summary/
 env:
   NUKE_NO_LOGO: true

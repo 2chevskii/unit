@@ -1,13 +1,20 @@
-﻿using Nuke.Common;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Nuke.Common;
 using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.IO;
 using Nuke.Common.Tools.GitHub;
+using Octokit;
 using Serilog;
+using ContentType = System.Net.Mime.ContentType;
 
 partial class Build
 {
     [Parameter]
     readonly string ReleaseTag;
+
+    string TagName => $"v{Version.SemVer}";
 
     Target DownloadReleaseAssets =>
         _ =>
@@ -16,7 +23,7 @@ partial class Build
                 .DependsOn(FetchGitHubRepositoryId)
                 .Executes(async () =>
                 {
-                    var release = await GitHubTasks.GitHubClient.Repository.Release.Get(
+                    Release release = await GitHubTasks.GitHubClient.Repository.Release.Get(
                         GitHubRepositoryId,
                         ReleaseTag
                     );
@@ -24,20 +31,64 @@ partial class Build
 
     Target CreateGithubReleaseDraft =>
         _ =>
-            _.Executes(async () =>
-            {
-                var assetFiles = PackagesDirectory.GlobFiles("*.{nupkg,snupkg}");
-
-                if (assetFiles.Count == 0)
+            _.DependsOn(FetchGitHubRepositoryId)
+                .Executes(async () =>
                 {
-                    Log.Warning(
-                        "No asset files were found in the {PackagesDirectory}",
-                        PackagesDirectory
+                    Log.Information("Creating GitHub release draft with tag {TagName}", TagName);
+
+                    IReadOnlyCollection<AbsolutePath> releaseAssets =
+                        ReleaseAssetsDirectory.GlobFiles("*.{nupkg,snupkg}");
+
+                    if (releaseAssets.Count == 0)
+                    {
+                        Log.Warning("No release assets were found");
+                    }
+                    else
+                    {
+                        Log.Information(
+                            "Discovered {AssetCount} release assets",
+                            releaseAssets.Count
+                        );
+                    }
+
+                    NewRelease newRelease = new NewRelease(TagName)
+                    {
+                        Draft = true,
+                        Name = Version.SemVer,
+                        Prerelease = !string.IsNullOrEmpty(Version.PreReleaseLabel),
+                        TargetCommitish = Version.Sha,
+                    };
+
+                    Release release = await GitHubTasks.GitHubClient.Repository.Release.Create(
+                        GitHubRepositoryId,
+                        newRelease
                     );
-                }
 
-                var tagName = $"v{Version.SemVer}";
+                    Log.Information("Created release with ID: {Id}", release.Id);
 
+                    foreach (AbsolutePath asset in releaseAssets)
+                    {
+                        await using FileStream assetFs = File.OpenRead(asset);
+                        Log.Information(
+                            "Uploading release asset: {AssetName} at {AssetPath} ({AssetLength} bytes)",
+                            asset.Name,
+                            asset.ToString(),
+                            assetFs.Length
+                        );
 
-            });
+                        ReleaseAssetUpload releaseAssetUpload = new ReleaseAssetUpload(
+                            asset.Name,
+                            "application/octet-stream",
+                            assetFs,
+                            null
+                        );
+                        ReleaseAsset releaseAsset =
+                            await GitHubTasks.GitHubClient.Repository.Release.UploadAsset(
+                                release,
+                                releaseAssetUpload
+                            );
+
+                        Log.Information("Uploaded asset ID: {Id}", releaseAsset.Id);
+                    }
+                });
 }
