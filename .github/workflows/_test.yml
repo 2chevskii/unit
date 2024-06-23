@@ -23,11 +23,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-reports
-          path: artifacts/test_results/coverage/reports/*.xml
+          path: artifacts/coverage/reports/*.xml
       - name: 📤 Upload test coverage summary html
         uses: actions/upload-artifact@v4
         with:
           name: coverage-summary
-          path: artifacts/test_results/coverage/summary
+          path: artifacts/coverage/summary
 env:
   NUKE_NO_LOGO: true
