@@ -9,7 +9,7 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 partial class Build
 {
     [Parameter]
-    readonly bool HtmlTestResults;
+    readonly bool EnableHtmlTestResults;
 
     Target Test =>
         _ =>
@@ -23,7 +23,7 @@ partial class Build
                                     TestProjects,
                                     (settings, project) =>
                                         settings
-                                            .Apply(TestSettingsLoggers(project))
+                                            .Apply(TestSettingsLogging(project))
                                             .SetProjectFile(project)
                                 )
                         )
@@ -36,20 +36,20 @@ partial class Build
                 .SetConfiguration(Configuration)
                 .SetResultsDirectory(TestResultsDirectory);
 
-    Func<Project, Configure<DotNetTestSettings>> TestSettingsLoggers =>
+    Func<Project, Configure<DotNetTestSettings>> TestSettingsLogging =>
         project =>
             settings =>
                 settings
-                    .AddLoggers("console;verbosity=detailed")
+                    .AddLoggers("console;verbosity=detailed;")
                     .When(
-                        HtmlTestResults,
-                        settings => settings.AddLoggers($"html;logfilename={project.Name}.html")
+                        EnableHtmlTestResults,
+                        settings => settings.AddLoggers($"html;logfilename={project.Name}.html;")
                     )
                     .When(
                         Host.IsGitHubActions(),
                         settings =>
                             settings.AddLoggers(
-                                "GitHubActions;summary.includePassedTests=true;summary.includeSkippedTests=true"
+                                "GitHubActions;summary.includePassedTests=true;summary.includeSkippedTests=true;"
                             )
                     );
 }

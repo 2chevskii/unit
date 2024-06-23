@@ -1,3 +1,4 @@
+# noinspection EditorConfigKeyCorrectness
 [*.cs]
 dotnet_style_qualification_for_field = false:warning
 dotnet_style_qualification_for_property = false:warning
@@ -11,3 +12,4 @@ csharp_style_expression_bodied_indexers = true:warning
 csharp_style_expression_bodied_accessors = true:warning
 
 resharper_all_underscore_local_parameter_name_highlighting = none
+resharper_unused_member_local_highlighting = none

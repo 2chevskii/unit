@@ -1,5 +1,6 @@
 ﻿using System;
 using Nuke.Common;
+using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.Coverlet;
@@ -11,15 +12,11 @@ using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
 [Requires<ReportGeneratorTasks>(Version = "5.3.6")]
 partial class Build
 {
-    [Parameter]
-    readonly bool CoverageHtmlReport;
-
-    Target Coverage => _ => _.DependsOn(CoverageCollect, CoverageReportHtml);
+    AbsolutePath CoverageReportsGlob => CoverageReportsDirectory / "*.xml";
 
     Target CoverageCollect =>
         _ =>
-            _.Unlisted()
-                .DependsOn(Compile)
+            _.DependsOn(Compile)
                 .Executes(
                     () =>
                         Coverlet(settings =>
@@ -33,16 +30,11 @@ partial class Build
                         )
                 );
 
-    Target CoverageReportHtml =>
+    Target CoverageCreateSummary =>
         _ =>
-            _.OnlyWhenStatic(() => CoverageHtmlReport)
-                .DependsOn(Compile)
-                .DependsOn(CoverageCollect)
+            _.DependsOn(Compile, CoverageCollect)
                 .Executes(
-                    () =>
-                        ReportGenerator(settings =>
-                            settings.Apply(ReportGeneratorSettingsBase)
-                        )
+                    () => ReportGenerator(settings => settings.Apply(ReportGeneratorSettingsBase))
                 );
 
     Configure<CoverletSettings> CoverletSettingsBase =>
@@ -57,13 +49,13 @@ partial class Build
                     .SetTargetArgs($"test {testProject} --no-build --configuration {Configuration}")
                     .SetAssembly(GetProjectOutputAssemblyPath(testProject))
                     .SetInclude($"[{srcProject.Name}]*")
-                    .SetOutput(CoverageDirectory / $"{srcProject.Name}.xml");
+                    .SetOutput(CoverageReportsDirectory / $"{srcProject.Name}.xml");
         };
 
     Configure<ReportGeneratorSettings> ReportGeneratorSettingsBase =>
         settings =>
             settings
-                .SetReports(CoverageDirectory / "*.xml")
+                .SetReports(CoverageReportsGlob)
                 .SetReportTypes(ReportTypes.Html_Dark)
-                .SetTargetDirectory(CoverageHtmlDirectory);
+                .SetTargetDirectory(CoverageSummaryDirectory);
 }

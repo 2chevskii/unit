@@ -18,7 +18,7 @@
           "type": "boolean",
           "description": "Indicates to continue a previously failed build attempt"
         },
-        "CoverageHtmlReport": {
+        "EnableHtmlTestResults": {
           "type": "boolean"
         },
         "Help": {
@@ -46,12 +46,13 @@
             "VSCode"
           ]
         },
-        "HtmlTestResults": {
-          "type": "boolean"
-        },
         "NoLogo": {
           "type": "boolean",
           "description": "Disables displaying the NUKE logo"
+        },
+        "NugetApiKey": {
+          "type": "string",
+          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
         },
         "NugetFeed": {
           "type": "string"
@@ -71,6 +72,9 @@
             "type": "string"
           }
         },
+        "ReleaseTag": {
+          "type": "string"
+        },
         "Root": {
           "type": "string",
           "description": "Root directory during build execution"
@@ -84,9 +88,9 @@
               "Clean",
               "CleanArtifacts",
               "Compile",
-              "Coverage",
               "CoverageCollect",
-              "CoverageReportHtml",
+              "CoverageCreateSummary",
+              "CreateGithubReleaseDraft",
               "Docs",
               "DocsCompile",
               "DocsDev",
@@ -94,7 +98,10 @@
               "DocsRestore",
               "DocsRestorePackageJson",
               "DocsSavePackageJson",
+              "DownloadReleaseAssets",
               "EnsureNugetFeedEnabled",
+              "FetchGitHubRepositoryId",
+              "NugetPush",
               "Pack",
               "Restore",
               "Test"
@@ -114,9 +121,9 @@
               "Clean",
               "CleanArtifacts",
               "Compile",
-              "Coverage",
               "CoverageCollect",
-              "CoverageReportHtml",
+              "CoverageCreateSummary",
+              "CreateGithubReleaseDraft",
               "Docs",
               "DocsCompile",
               "DocsDev",
@@ -124,7 +131,10 @@
               "DocsRestore",
               "DocsRestorePackageJson",
               "DocsSavePackageJson",
+              "DownloadReleaseAssets",
               "EnsureNugetFeedEnabled",
+              "FetchGitHubRepositoryId",
+              "NugetPush",
               "Pack",
               "Restore",
               "Test"

@@ -16,7 +16,7 @@ jobs:
         with:
           name: packages
           path: |
-            artifacts/pkg/*.nupkg
-            artifacts/pkg/*.snupkg
+            artifacts/packages/*.nupkg
+            artifacts/packages/*.snupkg
 env:
   NUKE_NO_LOGO: true

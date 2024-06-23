@@ -27,9 +27,10 @@ partial class Build
                 .DependsOn(EnsureNugetFeedEnabled)
                 .Executes(() =>
                 {
-                    var packagesToUpload = PackagesDirectory.GlobFiles("*.{nupkg,snupkg}");
+                    IReadOnlyCollection<AbsolutePath> packagesToUpload =
+                        PackagesDirectory.GlobFiles("*.nupkg");
 
-                    var feed = NuGetFeed.FromUri(NugetFeed);
+                    NuGetFeed feed = NuGetFeed.FromUri(NugetFeed);
 
                     DotNetNuGetPush(settings =>
                         settings

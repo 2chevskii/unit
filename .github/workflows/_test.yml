@@ -7,25 +7,27 @@ jobs:
         uses: actions/checkout@v4
         with: { fetch-depth: 0 }
       - name: 🛠️ Compile (Debug)
-        run: ./build.sh Compile --configuration Debug
-      - name: 🧪 Run unit tests
-        run: ./build.sh Test --html-test-results --configuration Debug --skip Compile
+        run: ./build.sh Compile
+      - name: 🧪 Run unit tests (with html test results)
+        run: ./build.sh Test --enable-html-test-results --skip Compile
       - name: 📝 Collect test coverage information
-        run: ./build.sh Coverage --coverage-html-report --configuration Debug --skip Compile
-      - name: 📤 Upload test results (html)
+        run: ./build.sh CoverageCollect --skip Compile
+      - name: 🧾 Generate test coverage summary html
+        run: ./build.sh CoverageCreateSummary --skip 'Compile CoverageCollect'
+      - name: 📤 Upload html test results page
         uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: artifacts/test_results/*.html
-      - name: 📤 Upload coverage report (cobertura xml)
+      - name: 📤 Upload cobertura test coverage data
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-cobertura
-          path: artifacts/test_results/coverage/*.xml
-      - name: 📤 Upload coverage report (html)
+          name: coverage-reports
+          path: artifacts/test_results/coverage/reports/*.xml
+      - name: 📤 Upload test coverage summary html
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-html
-          path: artifacts/test_results/coverage/html/
+          name: coverage-summary
+          path: artifacts/test_results/coverage/summary
 env:
   NUKE_NO_LOGO: true

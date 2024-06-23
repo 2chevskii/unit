@@ -1,4 +1,5 @@
-﻿using Nuke.Common;
+﻿using System.Linq;
+using Nuke.Common;
 using Nuke.Common.IO;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
@@ -32,15 +33,16 @@ partial class Build
                     ArtifactsDirectory,
                     PackagesDirectory,
                     TestResultsDirectory,
-                    CoverageDirectory,
-                    CoverageHtmlDirectory,
+                    CoverageReportsDirectory,
+                    CoverageSummaryDirectory,
                 ];
-                foreach (AbsolutePath directory in directoriesToClean)
+                foreach (AbsolutePath directory in directoriesToClean.Reverse())
                 {
                     if (!directory.DirectoryExists())
                     {
                         continue;
                     }
+
                     Log.Debug("Cleaning {Directory}", RootDirectory.GetRelativePathTo(directory));
                     directory.CreateOrCleanDirectory();
                 }

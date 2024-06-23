@@ -9,7 +9,7 @@ jobs:
     uses: ./.github/workflows/_build.yml
   create-release-draft:
     runs-on: ubuntu-22.04
-    needs: build
+    needs: [test, build]
     steps:
       - name: ✅ Checkout repository
         uses: actions/checkout@v4

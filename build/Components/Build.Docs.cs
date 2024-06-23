@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Nuke.Common;
 using Nuke.Common.IO;
 using Nuke.Common.Tooling;
@@ -10,7 +9,7 @@ using static Nuke.Common.Tools.Npm.NpmTasks;
 
 partial class Build
 {
-    string docsPackageJsonBackup;
+    string DocsPackageJsonBackup;
 
     AbsolutePath DocsDirectory => RootDirectory / "docs";
     AbsolutePath DocsPackageJson => DocsDirectory / "package.json";
@@ -84,19 +83,19 @@ partial class Build
                     "Saving {PackageJsonPath}",
                     RootDirectory.GetRelativePathTo(DocsPackageJson)
                 );
-                docsPackageJsonBackup = DocsPackageJson.ReadAllText();
+                DocsPackageJsonBackup = DocsPackageJson.ReadAllText();
             });
     Target DocsRestorePackageJson =>
         _ =>
             _.TriggeredBy(DocsPatchPackageJson)
                 .After(DocsDev, DocsCompile, DocsRestore)
-                .OnlyWhenDynamic(() => docsPackageJsonBackup != null)
+                .OnlyWhenDynamic(() => DocsPackageJsonBackup != null)
                 .Executes(() =>
                 {
                     Log.Information(
                         "Restoring {PackageJsonPath} to pre-build state",
                         RootDirectory.GetRelativePathTo(DocsPackageJson)
                     );
-                    DocsPackageJson.WriteAllText(docsPackageJsonBackup);
+                    DocsPackageJson.WriteAllText(DocsPackageJsonBackup);
                 });
 }
