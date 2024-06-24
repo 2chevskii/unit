@@ -12,3 +12,4 @@ jobs:
         run: ./build.sh TestDeploymentUrls
     outputs:
       package_url: ${{ steps.depl_test.outputs.package_url }}
+    environment: test_deployments
