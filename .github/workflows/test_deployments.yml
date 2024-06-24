@@ -1,6 +1,4 @@
-on:
-  push:
-    branches: ["*"]
+on: [push]
 jobs:
   test_deployment_urls:
     runs-on: ubuntu-22.04
