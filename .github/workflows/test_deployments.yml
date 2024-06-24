@@ -7,11 +7,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - id: depl_test
+      - id: deploy
         name: Run test deployment urls target
         run: ./build.sh TestDeploymentUrls
-    outputs:
-      package_url: ${{ steps.depl_test.outputs.package_url }}
     environment:
-      name: test_deployments
-      url: ${{ steps.depl_test.outputs.package_url}}
+      name: ${{ matrix.environment_name }}
+      url: ${{ steps.deploy.outputs.package_url }}
+    strategy:
+      matrix:
+        include:
+          - environment_name: test_deployments
+          - environment_name: test_deployments2

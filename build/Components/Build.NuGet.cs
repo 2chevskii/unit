@@ -114,6 +114,7 @@ partial class Build
         _ =>
             _.Executes(() =>
             {
+                Log.Information("Nuget feed: {Feed}", NugetFeed);
                 var outputPath = EnvironmentInfo.GetVariable<AbsolutePath>("GITHUB_OUTPUT");
 
                 Log.Information("Output path: {OutputPath}", outputPath.ToString());
