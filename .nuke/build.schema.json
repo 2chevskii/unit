@@ -18,7 +18,7 @@
           "type": "boolean",
           "description": "Indicates to continue a previously failed build attempt"
         },
-        "CopyLibs": {
+        "EnableHtmlTestResults": {
           "type": "boolean"
         },
         "Help": {
@@ -46,12 +46,13 @@
             "VSCode"
           ]
         },
-        "HtmlTestResults": {
-          "type": "boolean"
-        },
         "NoLogo": {
           "type": "boolean",
           "description": "Disables displaying the NUKE logo"
+        },
+        "NugetApiKey": {
+          "type": "string",
+          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
         },
         "NugetFeed": {
           "type": "string"
@@ -83,28 +84,22 @@
             "enum": [
               "Clean",
               "CleanArtifacts",
-              "CleanProjects",
               "Compile",
-              "CompileMain",
-              "CompileTests",
-              "CopyLibsOutput",
-              "Coverage",
               "CoverageCollect",
-              "CoverageReport",
-              "CreateGitHubRelease",
+              "CoverageCreateSummary",
+              "CreateGithubReleaseDraft",
               "Docs",
-              "DocsClean",
               "DocsCompile",
-              "DocsCopy",
               "DocsDev",
-              "DocsPreview",
+              "DocsPatchPackageJson",
               "DocsRestore",
-              "DownloadReleaseAssets",
-              "EnsureHasNugetFeed",
+              "DocsRestorePackageJson",
+              "DocsSavePackageJson",
+              "DownloadGithubReleaseAssets",
+              "FetchGitHubRepositoryId",
+              "NugetEnsureFeedEnabled",
               "NugetPush",
               "Pack",
-              "PatchPackageVersion",
-              "ReadNugetSources",
               "Restore",
               "Test"
             ]
@@ -122,28 +117,22 @@
             "enum": [
               "Clean",
               "CleanArtifacts",
-              "CleanProjects",
               "Compile",
-              "CompileMain",
-              "CompileTests",
-              "CopyLibsOutput",
-              "Coverage",
               "CoverageCollect",
-              "CoverageReport",
-              "CreateGitHubRelease",
+              "CoverageCreateSummary",
+              "CreateGithubReleaseDraft",
               "Docs",
-              "DocsClean",
               "DocsCompile",
-              "DocsCopy",
               "DocsDev",
-              "DocsPreview",
+              "DocsPatchPackageJson",
               "DocsRestore",
-              "DownloadReleaseAssets",
-              "EnsureHasNugetFeed",
+              "DocsRestorePackageJson",
+              "DocsSavePackageJson",
+              "DownloadGithubReleaseAssets",
+              "FetchGitHubRepositoryId",
+              "NugetEnsureFeedEnabled",
               "NugetPush",
               "Pack",
-              "PatchPackageVersion",
-              "ReadNugetSources",
               "Restore",
               "Test"
             ]

@@ -1,7 +1,7 @@
 {
   "name": "@2chevskii/unit-docs",
-  "version": "1.0.5",
-  "latestReleaseVersion": "1.0.5",
+  "version": "1.0.0",
+  "latestReleaseVersion": null,
   "description": "Dvchevskii.Unit package documentation",
   "private": true,
   "type": "module",

@@ -12,14 +12,18 @@ jobs:
         uses: actions/checkout@v4
         with: { fetch-depth: 0 }
       - name: 🔽 Download release assets
-        run: ./build.sh download-release-assets
+        run: ./build.sh DownloadGithubReleaseAssets
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: 🚚 Push packages to NuGet feed (nuget.org)
-        run: ./build.sh nuget-push --nuget-feed 'https://api.nuget.org/v3/index.json'
+      - id: nuget_push
+        name: 🚚 Push package ${{ matrix.package_id }} to NuGet feed ${{ vars.NUGET_FEED }}
+        run: ./build.sh NuGetPush --package-id '${{ matrix.package_id }}' --nuget-feed '${{ vars.NUGET_FEED }}'
         env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-      - name: 🚚 Push packages to NuGet feed (github.com)
-        run: ./build.sh nuget-push --nuget-feed 'https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json'
-        env:
-          NUGET_API_KEY: ${{ secrets.GITHUB_TOKEN }}
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY || secrets.GITHUB_TOKEN }}
+    environment:
+      name: ${{ matrix.environment_name }}
+      url: ${{ steps.nuget_push.outputs.package_url }}
+    strategy:
+      matrix:
+        environment_name: [nuget-feed:nuget.org, nuget-feed:github.com]
+        package_id: [Dvchevskii.Unit]

@@ -13,3 +13,4 @@ coverage/
 /docs/.vitepress/cache/
 /docs/.vitepress/dist/
 /docs/package-lock.json
+build/artifacts/

@@ -1,14 +1,6 @@
 using Nuke.Common;
 
-class Build : NukeBuild, IPack, IClean, INugetPush, IDocs, IControlNuGetSources
+partial class Build : NukeBuild
 {
-    public static int Main() => Execute<Build>(x => x.From<ICompile>().CompileMain);
-
-    protected override void OnBuildInitialized()
-    {
-        From<IHazArtifacts>().InitializeArtifactsDirectories();
-    }
-
-    T From<T>()
-        where T : class => this as T;
+    public static int Main() => Execute<Build>(x => x.Compile);
 }

@@ -1,0 +1,33 @@
+on: workflow_call
+jobs:
+  unit-test:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: ✅ Repository checkout
+        uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: 🛠️ Compile (Debug)
+        run: ./build.sh Compile
+      - name: 🧪 Run unit tests (with html test results)
+        run: ./build.sh Test --enable-html-test-results --skip Compile
+      - name: 📝 Collect test coverage information
+        run: ./build.sh CoverageCollect --skip Compile
+      - name: 🧾 Generate test coverage summary html
+        run: ./build.sh CoverageCreateSummary --skip 'Compile CoverageCollect'
+      - name: 📤 Upload html test results page
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: artifacts/test_results/*.html
+      - name: 📤 Upload cobertura test coverage data
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: artifacts/coverage/reports/*.xml
+      - name: 📤 Upload test coverage summary html
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-summary
+          path: artifacts/coverage/summary/
+env:
+  NUKE_NO_LOGO: true
