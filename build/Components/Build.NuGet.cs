@@ -116,10 +116,13 @@ partial class Build
             {
                 var outputPath = EnvironmentInfo.GetVariable<AbsolutePath>("GITHUB_OUTPUT");
 
+                Log.Information("Output path: {OutputPath}", outputPath.ToString());
+
                 outputPath.AppendAllLines(
                     [
-                        $"package_url=https://example.com/pkg/nuget/testpackage/v1.0.0-test.deployments"
-                    ]
+                        "package_url=https://example.com/pkg/nuget/testpackage/v1.0.0-test.deployments"
+                    ],
+                    Encoding.UTF8
                 );
             });
 
