@@ -10,6 +10,8 @@ jobs:
       - id: deploy
         name: Run test deployment urls target
         run: ./build.sh TestDeploymentUrls
+        env:
+          NUGET_FEED: ${{ github.env.NUGET_FEED }}
     environment:
       name: ${{ matrix.environment_name }}
       url: ${{ steps.deploy.outputs.package_url }}
