@@ -23,9 +23,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="$(SolutionDir)README.md" Pack="true" PackagePath="\"/>
-    <None Include="$(SolutionDir)assets\icon_128.jpg" Pack="true" PackagePath="\"/>
-    <None Include="$(SolutionDir)LICENSE" Pack="true" PackagePath="\"/>
+    <None Include="$(SolutionDir)README.md" Pack="true" PackagePath="\" Visible="false" />
+    <None Include="$(SolutionDir)assets\icon_128.jpg" Pack="true" PackagePath="\" Visible="false" />
+    <None Include="$(SolutionDir)LICENSE" Pack="true" PackagePath="\" Visible="false" />
   </ItemGroup>
 
 </Project>

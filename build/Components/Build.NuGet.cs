@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using NuGet.Packaging;
 using NuGet.Versioning;
 using Nuke.Common;
-using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.IO;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitHub;
-using Nuke.Common.Tools.NuGet;
 using Nuke.Common.Utilities;
 using Serilog;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
@@ -26,57 +22,69 @@ partial class Build
     [Parameter]
     readonly string NugetFeed;
 
+    [Parameter]
+    readonly string PackageId;
+
     [Parameter, Secret]
     readonly string NugetApiKey;
 
     Target NugetPush =>
         _ =>
-            _.Requires(() => NugetFeed)
-                .Requires(() => NugetApiKey)
+            _.Requires(() => NugetFeed, () => NugetApiKey, () => PackageId)
                 .DependsOn(NugetEnsureFeedEnabled)
                 .Executes(() =>
                 {
-                    IReadOnlyCollection<AbsolutePath> packagesToUpload =
-                        PackagesDirectory.GlobFiles("*.nupkg");
+                    NuGetFeed nugetFeed = NuGetFeed.FromUri(NugetFeed);
+                    AbsolutePath packagePath = PackagesDirectory
+                        .GlobFiles($"{PackageId}.*.nupkg")
+                        .FirstOrDefault();
 
-                    Log.Information(
-                        "Found {PackageCount} packages pending upload to feed {NugetFeed}",
-                        packagesToUpload.Count,
-                        NugetFeed
+                    if (packagePath == null)
+                    {
+                        throw new Exception(
+                            $"Could not find package with ID {PackageId} at {PackagesDirectory} directory"
+                        );
+                    }
+
+                    Log.Debug(
+                        "Nuget feed: {NugetFeed}, Package ID: {PackageId}, Package path: {PackagePath}",
+                        nugetFeed,
+                        PackageId,
+                        packagePath
                     );
 
-                    NuGetFeed feed = NuGetFeed.FromUri(NugetFeed);
+                    using PackageArchiveReader packageArchiveReader = new PackageArchiveReader(
+                        packagePath
+                    );
 
-                    Log.Information("Nuget feed is {NugetFeed}", feed);
+                    NuGetVersion packageVersion = packageArchiveReader.NuspecReader.GetVersion();
 
-                    List<(NuGetFeed, string, string)> pushedPackages = [];
+                    Log.Information(
+                        "Uploading {PackageId} v{Version} to {NugetFeed}",
+                        PackageId,
+                        packageVersion,
+                        nugetFeed.Name
+                    );
 
-                    foreach (AbsolutePath packagePath in packagesToUpload)
+                    DotNetNuGetPush(settings =>
+                        settings
+                            .SetSource(nugetFeed.Name)
+                            .SetApiKey(NugetApiKey)
+                            .SetTargetPath(packagePath)
+                    );
+
+                    string deploymentUrl = GetPackageDeploymentUrl(
+                        nugetFeed,
+                        packageVersion.ToString()
+                    );
+
+                    if (deploymentUrl == null)
                     {
-                        Log.Information("Uploading package {PackagePath}", packagePath);
-
-                        using PackageArchiveReader packageArchiveReader = new PackageArchiveReader(
-                            packagePath
-                        );
-
-                        string packageId = packageArchiveReader.NuspecReader.GetId();
-                        NuGetVersion packageVersion =
-                            packageArchiveReader.NuspecReader.GetVersion();
-
-                        Log.Information(
-                            "Package metadata: {Id}.{Version}",
-                            packageId,
-                            packageVersion
-                        );
-
-                        DotNetNuGetPush(settings =>
-                            settings
-                                .SetSource(feed.Name)
-                                .SetApiKey(NugetApiKey)
-                                .SetTargetPath(packagePath)
-                        );
-
-                        pushedPackages.Add((feed, packageId, packageVersion.ToString()));
+                        Log.Warning("Failed to determine package deployment URL");
+                    }
+                    else
+                    {
+                        WriteActionsOutput("package_url", deploymentUrl);
                     }
                 });
 
@@ -109,23 +117,6 @@ partial class Build
                         Log.Information("Required feed found and enabled");
                     }
                 });
-
-    Target TestDeploymentUrls =>
-        _ =>
-            _.Executes(() =>
-            {
-                Log.Information("Nuget feed: {Feed}", NugetFeed);
-                var outputPath = EnvironmentInfo.GetVariable<AbsolutePath>("GITHUB_OUTPUT");
-
-                Log.Information("Output path: {OutputPath}", outputPath.ToString());
-
-                outputPath.AppendAllLines(
-                    [
-                        "package_url=https://example.com/pkg/nuget/testpackage/v1.0.0-test.deployments"
-                    ],
-                    Encoding.UTF8
-                );
-            });
 
     List<NuGetFeed> GetNuGetFeeds()
     {
@@ -168,40 +159,15 @@ partial class Build
         return matches;
     }
 
-    void WritePushedPackageUrlsToGithubOutput(
-        IReadOnlyCollection<(
-            NuGetFeed feed,
-            string packageId,
-            string packageVersion
-        )> pushedPackages
-    )
+    string GetPackageDeploymentUrl(NuGetFeed nugetFeed, string packageVersion)
     {
-        const string variableName = "packages_urls";
-
-        var packageUrls = pushedPackages
-            .Select(pushedPackage =>
-                pushedPackage.feed.Name switch
-                {
-                    "nuget.org"
-                        => GetNugetOrgPackageUrl(
-                            pushedPackage.packageId,
-                            pushedPackage.packageVersion
-                        ),
-                    "github.com" => GetGithubPackageUrl(pushedPackage.packageId),
-                    var _ => null
-                }
-            )
-            .Where(x => x != null);
-    }
-
-    string GetNugetOrgPackageUrl(string packageId, string packageVersion)
-    {
-        return $"https://nuget.org/packages/{packageId}/{packageVersion}";
-    }
-
-    string GetGithubPackageUrl(string packageId)
-    {
-        return $"https://github.com/{GitRepository.GetGitHubOwner()}/{GitRepository.GetGitHubName()}/pkgs/nuget/{packageId}";
+        return nugetFeed.Name switch
+        {
+            "nuget.org" => $"https://nuget.org/packages/{PackageId}/{packageVersion}",
+            "github.com"
+                => $"https://github.com/{GitRepository.GetGitHubOwner()}/{GitRepository.GetGitHubName()}/pkgs/nuget/{PackageId}",
+            var _ => null
+        };
     }
 
     void WriteActionsOutput(string variableName, string format, params object[] args)
@@ -213,11 +179,13 @@ partial class Build
             args
         );
 
-        var outputPath = AbsolutePath.Create(EnvironmentInfo.GetVariable<string>("GITHUB_OUTPUT"));
+        AbsolutePath outputPath = AbsolutePath.Create(
+            EnvironmentInfo.GetVariable<string>("GITHUB_OUTPUT")
+        );
 
         Log.Debug("Output path is {OutputPath}", outputPath);
 
-        var content = $"{variableName}={string.Format(format, args)}\n";
+        string content = $"{variableName}={string.Format(format, args)}\n";
 
         Log.Debug("Content is {Content}", content);
 
