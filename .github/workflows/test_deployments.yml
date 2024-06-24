@@ -1,0 +1,16 @@
+on:
+  push:
+    branches: ["*"]
+jobs:
+  test_deployment_urls:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: ✅ Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: depl_test
+        name: Run test deployment urls target
+        run: ./build.sh TestDeploymentUrls
+    outputs:
+      package_url: ${{ steps.depl_test.outputs.package_url }}

@@ -49,6 +49,8 @@ partial class Build
 
                     Log.Information("Nuget feed is {NugetFeed}", feed);
 
+                    List<(NuGetFeed, string, string)> pushedPackages = [];
+
                     foreach (AbsolutePath packagePath in packagesToUpload)
                     {
                         Log.Information("Uploading package {PackagePath}", packagePath);
@@ -74,7 +76,7 @@ partial class Build
                                 .SetTargetPath(packagePath)
                         );
 
-                        WritePushedPackageUrlToOutput(feed, packageId, packageVersion.ToString());
+                        pushedPackages.Add((feed, packageId, packageVersion.ToString()));
                     }
                 });
 
@@ -107,6 +109,19 @@ partial class Build
                         Log.Information("Required feed found and enabled");
                     }
                 });
+
+    Target TestDeploymentUrls =>
+        _ =>
+            _.Executes(() =>
+            {
+                var outputPath = EnvironmentInfo.GetVariable<AbsolutePath>("GITHUB_OUTPUT");
+
+                outputPath.AppendAllLines(
+                    [
+                        $"package_url=https://example.com/pkg/nuget/testpackage/v1.0.0-test.deployments"
+                    ]
+                );
+            });
 
     List<NuGetFeed> GetNuGetFeeds()
     {
@@ -149,32 +164,30 @@ partial class Build
         return matches;
     }
 
-    void WritePushedPackageUrlToOutput(NuGetFeed feed, string packageId, string packageVersion)
+    void WritePushedPackageUrlsToGithubOutput(
+        IReadOnlyCollection<(
+            NuGetFeed feed,
+            string packageId,
+            string packageVersion
+        )> pushedPackages
+    )
     {
-        const string packageUrlVariableName = "package_url";
-        Log.Information(
-            "Writing package URL to output {Feed} {PackageId} {PackageVersion}",
-            feed,
-            packageId,
-            packageVersion
-        );
+        const string variableName = "packages_urls";
 
-        switch (feed.Name)
-        {
-            case "nuget.org":
-                string url = GetNugetOrgPackageUrl(packageId, packageVersion);
-                WriteActionsOutput(packageUrlVariableName, url);
-                break;
-
-            case "github.com":
-                url = GetGithubPackageUrl(packageId);
-                WriteActionsOutput(packageUrlVariableName, url);
-                break;
-
-            default:
-                Log.Warning("Unknown feed name: {FeedName}", feed.Name);
-                break;
-        }
+        var packageUrls = pushedPackages
+            .Select(pushedPackage =>
+                pushedPackage.feed.Name switch
+                {
+                    "nuget.org"
+                        => GetNugetOrgPackageUrl(
+                            pushedPackage.packageId,
+                            pushedPackage.packageVersion
+                        ),
+                    "github.com" => GetGithubPackageUrl(pushedPackage.packageId),
+                    var _ => null
+                }
+            )
+            .Where(x => x != null);
     }
 
     string GetNugetOrgPackageUrl(string packageId, string packageVersion)
