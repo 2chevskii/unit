@@ -12,14 +12,19 @@ jobs:
         uses: actions/checkout@v4
         with: { fetch-depth: 0 }
       - name: 🔽 Download release assets
-        run: ./build.sh DownloadReleaseAssets --release-tag ${{ github.ref_name }}
+        run: ./build.sh DownloadGithubReleaseAssets
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: 🚚 Push packages to NuGet feed (nuget.org)
+      - id: nuget_push_nuget_org
+        name: 🚚 Push packages to NuGet feed (nuget.org)
         run: ./build.sh NuGetPush --nuget-feed 'https://api.nuget.org/v3/index.json'
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-      - name: 🚚 Push packages to NuGet feed (github.com)
+      - id: nuget_push_github
+        name: 🚚 Push packages to NuGet feed (github.com)
         run: ./build.sh NuGetPush --nuget-feed 'https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json'
         env:
           NUGET_API_KEY: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      nuget_org_package_url: ${{ steps.nuget_push_nuget_org.outputs.package_url }}
+      github_package_url: ${{ steps.nuget_push_github.outputs.package_url }}

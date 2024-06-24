@@ -1,18 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
+using NuGet.Packaging;
+using NuGet.Versioning;
 using Nuke.Common;
+using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.IO;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
+using Nuke.Common.Tools.GitHub;
+using Nuke.Common.Tools.NuGet;
 using Nuke.Common.Utilities;
 using Serilog;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 partial class Build
 {
-    static readonly Regex NugetFeedRegex = GetNugetFeedRegex();
+    static readonly Regex NugetFeedRegex = new Regex(
+        @"\s+\d+\.\s+([^\s]+)\s+\[([^\]]+?)\]\r?\n\s*([^\s]+)"
+    );
 
     [Parameter]
     readonly string NugetFeed;
@@ -24,26 +33,52 @@ partial class Build
         _ =>
             _.Requires(() => NugetFeed)
                 .Requires(() => NugetApiKey)
-                .DependsOn(EnsureNugetFeedEnabled)
+                .DependsOn(NugetEnsureFeedEnabled)
                 .Executes(() =>
                 {
                     IReadOnlyCollection<AbsolutePath> packagesToUpload =
                         PackagesDirectory.GlobFiles("*.nupkg");
 
+                    Log.Information(
+                        "Found {PackageCount} packages pending upload to feed {NugetFeed}",
+                        packagesToUpload.Count,
+                        NugetFeed
+                    );
+
                     NuGetFeed feed = NuGetFeed.FromUri(NugetFeed);
 
-                    DotNetNuGetPush(settings =>
-                        settings
-                            .SetSource(feed.Name)
-                            .SetApiKey(NugetApiKey)
-                            .CombineWith(
-                                packagesToUpload,
-                                (settings, package) => settings.SetTargetPath(package)
-                            )
-                    );
+                    Log.Information("Nuget feed is {NugetFeed}", feed);
+
+                    foreach (AbsolutePath packagePath in packagesToUpload)
+                    {
+                        Log.Information("Uploading package {PackagePath}", packagePath);
+
+                        using PackageArchiveReader packageArchiveReader = new PackageArchiveReader(
+                            packagePath
+                        );
+
+                        string packageId = packageArchiveReader.NuspecReader.GetId();
+                        NuGetVersion packageVersion =
+                            packageArchiveReader.NuspecReader.GetVersion();
+
+                        Log.Information(
+                            "Package metadata: {Id}.{Version}",
+                            packageId,
+                            packageVersion
+                        );
+
+                        DotNetNuGetPush(settings =>
+                            settings
+                                .SetSource(feed.Name)
+                                .SetApiKey(NugetApiKey)
+                                .SetTargetPath(packagePath)
+                        );
+
+                        WritePushedPackageUrlToOutput(feed, packageId, packageVersion.ToString());
+                    }
                 });
 
-    Target EnsureNugetFeedEnabled =>
+    Target NugetEnsureFeedEnabled =>
         _ =>
             _.Requires(() => NugetFeed)
                 .Executes(() =>
@@ -72,9 +107,6 @@ partial class Build
                         Log.Information("Required feed found and enabled");
                     }
                 });
-
-    [GeneratedRegex(@"\s+\d+\.\s+([^\s]+)\s+\[([^\]]+?)\]\r?\n\s*([^\s]+)")]
-    private static partial Regex GetNugetFeedRegex();
 
     List<NuGetFeed> GetNuGetFeeds()
     {
@@ -115,5 +147,63 @@ partial class Build
         }
 
         return matches;
+    }
+
+    void WritePushedPackageUrlToOutput(NuGetFeed feed, string packageId, string packageVersion)
+    {
+        const string packageUrlVariableName = "package_url";
+        Log.Information(
+            "Writing package URL to output {Feed} {PackageId} {PackageVersion}",
+            feed,
+            packageId,
+            packageVersion
+        );
+
+        switch (feed.Name)
+        {
+            case "nuget.org":
+                string url = GetNugetOrgPackageUrl(packageId, packageVersion);
+                WriteActionsOutput(packageUrlVariableName, url);
+                break;
+
+            case "github.com":
+                url = GetGithubPackageUrl(packageId);
+                WriteActionsOutput(packageUrlVariableName, url);
+                break;
+
+            default:
+                Log.Warning("Unknown feed name: {FeedName}", feed.Name);
+                break;
+        }
+    }
+
+    string GetNugetOrgPackageUrl(string packageId, string packageVersion)
+    {
+        return $"https://nuget.org/packages/{packageId}/{packageVersion}";
+    }
+
+    string GetGithubPackageUrl(string packageId)
+    {
+        return $"https://github.com/{GitRepository.GetGitHubOwner()}/{GitRepository.GetGitHubName()}/pkgs/nuget/{packageId}";
+    }
+
+    void WriteActionsOutput(string variableName, string format, params object[] args)
+    {
+        Log.Debug(
+            "Writing actions output: {VariableName} {Format} {@Args}",
+            variableName,
+            format,
+            args
+        );
+
+        var outputPath = AbsolutePath.Create(EnvironmentInfo.GetVariable<string>("GITHUB_OUTPUT"));
+
+        Log.Debug("Output path is {OutputPath}", outputPath);
+
+        var content = $"{variableName}={string.Format(format, args)}\n";
+
+        Log.Debug("Content is {Content}", content);
+
+        outputPath.AppendAllText(content);
     }
 }

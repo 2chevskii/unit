@@ -72,9 +72,6 @@
             "type": "string"
           }
         },
-        "ReleaseTag": {
-          "type": "string"
-        },
         "Root": {
           "type": "string",
           "description": "Root directory during build execution"
@@ -98,9 +95,9 @@
               "DocsRestore",
               "DocsRestorePackageJson",
               "DocsSavePackageJson",
-              "DownloadReleaseAssets",
-              "EnsureNugetFeedEnabled",
+              "DownloadGithubReleaseAssets",
               "FetchGitHubRepositoryId",
+              "NugetEnsureFeedEnabled",
               "NugetPush",
               "Pack",
               "Restore",
@@ -131,9 +128,9 @@
               "DocsRestore",
               "DocsRestorePackageJson",
               "DocsSavePackageJson",
-              "DownloadReleaseAssets",
-              "EnsureNugetFeedEnabled",
+              "DownloadGithubReleaseAssets",
               "FetchGitHubRepositoryId",
+              "NugetEnsureFeedEnabled",
               "NugetPush",
               "Pack",
               "Restore",

@@ -5,28 +5,43 @@ using Nuke.Common;
 using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.IO;
 using Nuke.Common.Tools.GitHub;
+using Nuke.Common.Utilities;
 using Octokit;
 using Serilog;
-using ContentType = System.Net.Mime.ContentType;
 
 partial class Build
 {
-    [Parameter]
-    readonly string ReleaseTag;
-
     string TagName => $"v{Version.SemVer}";
 
-    Target DownloadReleaseAssets =>
+    Target DownloadGithubReleaseAssets =>
         _ =>
             _.Requires(() => GitHubActions.Instance.Token)
-                .Requires(() => ReleaseTag)
                 .DependsOn(FetchGitHubRepositoryId)
                 .Executes(async () =>
                 {
+                    Log.Information(
+                        "Downloading assets from the {RefName} release",
+                        GitHubActions.Instance.RefName
+                    );
+
                     Release release = await GitHubTasks.GitHubClient.Repository.Release.Get(
                         GitHubRepositoryId,
-                        ReleaseTag
+                        GitHubActions.Instance.RefName
                     );
+
+                    foreach (
+                        ReleaseAsset releaseAsset in release.Assets.Where(asset =>
+                            asset.Name.EndsWithAny(".nupkg", ".snupkg")
+                        )
+                    )
+                    {
+                        Log.Information("Downloading asset {Name}", releaseAsset.Name);
+
+                        await HttpTasks.HttpDownloadFileAsync(
+                            releaseAsset.BrowserDownloadUrl,
+                            PackagesDirectory / releaseAsset.Name
+                        );
+                    }
                 });
 
     Target CreateGithubReleaseDraft =>
