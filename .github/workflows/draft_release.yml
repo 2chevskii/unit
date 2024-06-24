@@ -18,7 +18,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: packages
-          path: artifacts/release/
+          path: artifacts/release_assets/
       - name: 🚀 Create GitHub release and upload asset files
         run: ./build.sh CreateGithubReleaseDraft
         env:
